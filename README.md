@@ -14,7 +14,7 @@ Start with a mood (whimsical, methodical, adventurous, classic, abrasive or roma
 
 Once GitHub Pages is switched on, the books are live at:
 
-`https://YOUR-USERNAME.github.io/cocktail-adventures/`
+`https://JoSo005.github.io/cocktail-adventures/`
 
 ## Files
 
