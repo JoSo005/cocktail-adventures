@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Wayfarer's Pour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Gloock&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
+<style>
+:root{
+  /* Layout: one bound leaf on a quiet desk, a sticky passport strip above it, a luggage-tag recipe card inside.
+     The bold move is the passport stamps. Everything else stays calm. */
+  --desk:#DCE3E1;
+  --leaf:#F6F8F7;
+  --tag:#FFFFFF;
+  --ink:#15242D;
+  --ink-2:#4A5C65;
+  --rule:#C3CECB;
+  --rule-2:#93A6A2;
+  --hover:#E8EEEC;
+  --gold:#7E5F16;
+  --c-scot:#6B4E8A;
+  --c-carib:#0B7378;
+  --c-eng:#3B6A47;
+  --c-mex:#B0295F;
+  --c-ita:#B5381F;
+  --f-display:'Gloock','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --f-body:'Newsreader','Iowan Old Style',Georgia,serif;
+  --f-mono:'DM Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0A1218; --leaf:#111E27; --tag:#17293A; --ink:#E4EBE9; --ink-2:#9DB0B6;
+    --rule:#233744; --rule-2:#3D5565; --hover:#182A36; --gold:#D8B35F;
+    --c-scot:#BA9CDD; --c-carib:#55C6CB; --c-eng:#8CC79B; --c-mex:#F27FA9; --c-ita:#F58F72;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0A1218; --leaf:#111E27; --tag:#17293A; --ink:#E4EBE9; --ink-2:#9DB0B6;
+  --rule:#233744; --rule-2:#3D5565; --hover:#182A36; --gold:#D8B35F;
+  --c-scot:#BA9CDD; --c-carib:#55C6CB; --c-eng:#8CC79B; --c-mex:#F27FA9; --c-ita:#F58F72;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--desk);color:var(--ink);
+  font-family:var(--f-body);font-size:18px;line-height:1.6;
+  padding-inline:16px;padding-block:0 40px;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:680px;margin-inline:auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent,var(--gold));outline-offset:2px}
+
+/* passport strip */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--desk);border-bottom:1px solid var(--rule)}
+.bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding-block:10px}
+.brand{appearance:none;background:none;border:0;padding:0;cursor:pointer;flex:1 1 auto;text-align:left;font:400 1.15rem/1.2 var(--f-display);color:var(--ink)}
+.count{font:500 12px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.stamps{display:flex;gap:10px;order:3;flex-basis:100%}
+@media (min-width:600px){
+  .stamps{order:0;flex-basis:auto}
+  .brand{flex:0 1 auto;margin-right:auto}
+}
+.mini{
+  appearance:none;padding:0;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;background:transparent;
+  border:1.5px dashed var(--rule-2);color:var(--ink-2);
+  font:500 10px/1 var(--f-mono);letter-spacing:.06em;
+}
+.mini:disabled{cursor:default}
+.mini.on{
+  border:2px solid var(--c);color:var(--c);cursor:pointer;
+  box-shadow:inset 0 0 0 2px var(--desk),inset 0 0 0 3px var(--c);
+  transform:rotate(var(--rot,-6deg));
+}
+.mini.on:hover{background:var(--hover)}
+
+/* the leaf */
+.leaf{
+  --accent:var(--gold);
+  position:relative;margin-top:14px;
+  background:var(--leaf);border:1px solid var(--rule);
+  padding:24px 20px 22px;
+  box-shadow:0 18px 34px -24px rgba(0,0,0,.45);
+}
+@media (min-width:600px){.leaf{padding:36px 48px 34px}}
+.leaf[data-region="scot"]{--accent:var(--c-scot)}
+.leaf[data-region="carib"]{--accent:var(--c-carib)}
+.leaf[data-region="eng"]{--accent:var(--c-eng)}
+.leaf[data-region="mex"]{--accent:var(--c-mex)}
+.leaf[data-region="ita"]{--accent:var(--c-ita)}
+
+.k{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.folio{
+  display:flex;justify-content:space-between;gap:12px;
+  padding-bottom:10px;margin-bottom:22px;border-bottom:1px solid var(--rule);
+  font:400 12px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+}
+.folio b{color:var(--accent);font-weight:500}
+.folio span:last-child{text-align:right}
+
+h1{
+  font:400 clamp(2rem,7vw,2.9rem)/1.08 var(--f-display);
+  margin:0 0 16px;text-wrap:balance;
+}
+h1:focus{outline:none}
+.leaf p{margin:0 0 1em;max-width:62ch}
+.sense{display:flex;flex-wrap:wrap;gap:2px 12px;align-items:baseline;margin-bottom:20px!important}
+.sense em{font-size:1rem;color:var(--ink-2)}
+
+.fact{margin:22px 0 4px;padding:14px 0;border-block:1px dashed var(--rule-2)}
+.fact p{margin:6px 0 0;font-size:1rem;color:var(--ink-2)}
+
+/* stamp on arrival pages */
+.stamp{
+  float:right;width:96px;height:96px;margin:-2px 0 6px 12px;
+  color:var(--accent);shape-outside:circle(50%);transform:rotate(-9deg);
+}
+.stamp svg{display:block;width:100%;height:100%}
+.stamp.fresh{animation:thunk .6s cubic-bezier(.2,.9,.3,1.15) both}
+@keyframes thunk{
+  0%{transform:rotate(-26deg) scale(1.8);opacity:0}
+  55%{opacity:1}
+  100%{transform:rotate(-9deg) scale(1);opacity:1}
+}
+
+/* recipe luggage tag */
+.tag{
+  position:relative;margin:30px 0 4px;padding:42px 20px 18px;
+  background:var(--tag);border:1.5px solid var(--ink-2);
+}
+.tag::before{
+  content:"";position:absolute;top:13px;left:50%;width:14px;height:14px;margin-left:-7px;
+  border-radius:50%;background:var(--leaf);border:1.5px solid var(--ink-2);
+}
+.tag::after{content:"";position:absolute;inset:6px;border:1px dashed var(--rule-2);pointer-events:none}
+.tag .k{display:block;text-align:center}
+.tag h2{font:400 clamp(1.8rem,6vw,2.3rem)/1.1 var(--f-display);margin:4px 0 14px;text-align:center;text-wrap:balance}
+.ing{list-style:none;margin:0 0 14px;padding:0}
+.ing li{display:grid;grid-template-columns:7.8rem 1fr;gap:12px;padding:7px 0;border-bottom:1px dotted var(--rule-2)}
+.amt{font:500 13px/1.7 var(--f-mono);color:var(--accent);white-space:nowrap}
+.amt i{font-style:normal;font-weight:400;color:var(--ink-2)}
+.rows{display:grid;grid-template-columns:5.4rem 1fr;gap:8px 12px;margin:0}
+.rows dt{font:500 11px/1.9 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.rows dd{margin:0;font-size:1rem;min-width:0}
+.rows dd.say{font-style:italic}
+@media (max-width:420px){
+  .tag{padding:40px 14px 16px}
+  .ing li{grid-template-columns:6.9rem 1fr;gap:8px}
+  .rows{grid-template-columns:4.6rem 1fr;gap:8px}
+}
+
+/* flight list on the last page */
+.flight{list-style:none;margin:10px 0 6px;padding:0;counter-reset:f}
+.flight li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 16px;padding:9px 0;border-bottom:1px dotted var(--rule-2)}
+.flight .nm{font:400 1.3rem/1.2 var(--f-display)}
+.flight .meta{font:400 12px/1.4 var(--f-mono);letter-spacing:.08em;color:var(--ink-2)}
+.sub-k{display:block;margin:26px 0 4px}
+
+/* choices */
+.ask{margin:30px 0 10px!important;font:500 11.5px/1.3 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.choices{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.choice{
+  appearance:none;width:100%;min-height:52px;cursor:pointer;
+  display:flex;align-items:center;gap:14px;text-align:left;
+  padding:12px 16px;background:transparent;
+  border:1px solid var(--rule-2);line-height:1.35;font-size:1.02rem;
+}
+.choice:hover:not(:disabled){background:var(--hover);border-color:var(--accent)}
+.choice:disabled{opacity:.55;cursor:not-allowed}
+.ctext{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.csub{font:400 12px/1.4 var(--f-mono);letter-spacing:.06em;color:var(--ink-2)}
+.ref{flex:none;font:500 12px/1 var(--f-mono);letter-spacing:.1em;color:var(--accent);white-space:nowrap}
+.choice.seen .ref::after{content:" · read";color:var(--ink-2);font-weight:400}
+.ring{
+  flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  border:1.5px solid var(--accent);color:var(--accent);
+  font:500 11px/1 var(--f-mono);letter-spacing:.06em;
+}
+
+/* nav under the leaf */
+.nav{display:flex;flex-wrap:wrap;gap:4px 22px;margin-top:12px}
+.linkbtn{
+  appearance:none;background:none;border:0;padding:8px 0;cursor:pointer;
+  font:400 12px/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);
+  text-decoration:underline;text-decoration-color:var(--rule-2);text-underline-offset:5px;
+}
+.linkbtn:hover:not(:disabled){color:var(--ink)}
+.linkbtn:disabled{opacity:.4;cursor:default;text-decoration:none}
+.legal{margin:26px 0 0;font:400 12px/1.5 var(--f-mono);letter-spacing:.06em;color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <button class="brand" id="brand" type="button">The Wayfarer’s Pour</button>
+    <div class="stamps" id="stamps"></div>
+    <div class="count" id="count"></div>
+  </div>
+</header>
+<main class="wrap">
+  <article class="leaf" id="leaf"></article>
+  <nav class="nav" id="nav" aria-label="Book controls"></nav>
+  <p class="legal">Please drink responsibly. Historical origins of cocktails are often disputed; where a story is a legend, this book says so.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- destinations ---------- */
+var REGIONS={
+  scot:{name:'The Scottish Highlands',short:'Highlands',stamp:'HIGHLANDS',code:'INV',spirit:'Whisky',arrival:10,pours:[11,12]},
+  carib:{name:'The Caribbean',short:'Caribbean',stamp:'BARBADOS',code:'BGI',spirit:'Rum',arrival:20,pours:[21,22]},
+  eng:{name:'England',short:'London',stamp:'LONDON',code:'LHR',spirit:'Gin',arrival:30,pours:[31,32]},
+  mex:{name:'Jalisco, Mexico',short:'Jalisco',stamp:'JALISCO',code:'GDL',spirit:'Tequila',arrival:40,pours:[41,42]},
+  ita:{name:'Italy',short:'Torino',stamp:'TORINO',code:'TRN',spirit:'Vermouth and bitters',arrival:50,pours:[51,52]}
+};
+var TOTAL_POURS=10, HOME_AT=3;
+
+/* ---------- the book ---------- */
+var PAGES={
+
+1:{n:1,kind:'prologue',label:'Prologue',title:'The Trunk at the End of the Bar',
+ sense:['Breathe in','Sea salt, old leather, orange peel'],
+ paras:[
+  "It is the quiet hour, after the dinner rush and before last call. At the far end of the bar sits a steamer trunk that was not there this afternoon. Its leather is scuffed, its brass corners are warm to the touch, and every inch is papered with luggage labels from places that seem to smell like something good to drink.",
+  "A boarding pass is tucked under the latch. It has your name on it. Beside Destination, someone has written: your choice.",
+  "Every spirit in your glass was born somewhere, usually for a strange reason. Tonight you can go and see for yourself. The trunk, you will notice, does not respect calendars."
+ ],
+ how:"Choose an option, then turn to the page it names. Every destination has two proper pours and one detour you were warned about. Your passport, at the top of the page, keeps count.",
+ choices:[{to:2,text:"Unbuckle the trunk and step inside"}]},
+
+2:{n:2,kind:'hub',label:'The Concourse',title:'Departures',
+ sense:['Listen','Split-flap boards clacking, a distant fiddle, a steel pan rehearsing'],
+ paras:[
+  "The trunk opens onto a long concourse of brass and marble, with a split-flap board clattering overhead. Five departures are lit. Collect as many stamps as you like.",
+  "Once you have gathered three pours, a sixth board flickers to life and spells out HOME."
+ ],
+ ask:'Where to?'},
+
+/* ---------- Scotland ---------- */
+10:{n:10,kind:'arrival',region:'scot',label:'Arrival',title:'Where the Water of Life Begins',
+ sense:['Breathe in','Peat smoke, wet heather, warm barley'],
+ paras:[
+  "You step off the train at Inverness into rain so fine it feels like being breathed on. A long walk up a glen brings you to a whitewashed stillhouse, steaming gently beside a burn the colour of strong tea.",
+  "The Gaelic is uisge beatha, the water of life, and English ears wore it down to “whisky”. The first written trace in Scotland is a tax roll from 1494, which records eight bolls of malt handed to a friar named John Cor to make aqua vitae. That is a great many bowls of porridge.",
+  "The stillman nods at two doors. One leads down to the warehouse where the casks sleep. The other leads to a fire, where someone is playing the fiddle with more enthusiasm than skill. Through a window, the glen is going purple with dusk."
+ ],
+ fact:"Roughly two percent of the whisky in a Scotch cask evaporates through the oak each year. Distillers call it the angels’ share.",
+ choices:[
+  {to:11,text:"Follow the stillman down to the cask warehouse"},
+  {to:12,text:"Follow the fiddle to the fire"},
+  {to:13,text:"Step outside to admire the glen at dusk"}
+ ]},
+
+11:{n:11,kind:'pour',region:'scot',label:'The Pour',title:'The Sleeping Casks',
+ sense:['Listen','Oak knocking back like a drum, water dripping somewhere'],
+ paras:[
+  "The warehouse is cool, dim, and heavy with a sweetness you can almost chew. The stillman raps a barrel with his knuckles and it answers like a drum. “Three years in oak, by law,” he says. “The good ones take far longer.”",
+  "Out in the world, Scotch went travelling. In 1894, a bartender at New York’s Waldorf Hotel is said to have stirred it into a Manhattan to celebrate a new operetta about the outlaw Rob Roy MacGregor, Scotland’s answer to Robin Hood. The result kept the Manhattan’s bones and gave them a kilt."
+ ],
+ recipe:{name:'Rob Roy',spirit:'Scotch whisky',glass:'Chilled coupe',
+  method:'Stir with ice for 30 seconds, then strain.',
+  ing:[['2 oz','60 ml','Blended Scotch whisky'],['1 oz','30 ml','Sweet vermouth'],['2 dashes','','Angostura bitters']],
+  garnish:'Brandied cherry or a lemon twist',taste:'Dark cherry, a thread of smoke, baking spice'},
+ choices:[{to:12,text:"Follow the fiddle to the fire"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+12:{n:12,kind:'pour',region:'scot',label:'The Pour',title:'The Fireside',
+ sense:['Feel','Heat on your shins, a wool blanket, a glass warmed by a hand'],
+ paras:[
+  "The fire room is full of people who have been telling the same stories for decades and see no reason to stop. A woman presses a glass into your hand and announces that it is the drink of Bonnie Prince Charlie.",
+  "The legend goes like this. After the failed Jacobite rising of 1745, the prince thanked the MacKinnon clan, who had sheltered him, with the recipe for his private liqueur, made from Scotch, heather honey, and herbs. The MacKinnons called it Drambuie, from the Gaelic an dram buidheach, “the drink that satisfies”.",
+  "Pour that liqueur over more Scotch and you have the Rusty Nail, a fixture of 1960s cocktail lounges. Two ingredients, one big ice cube, and a fire to sit beside."
+ ],
+ recipe:{name:'Rusty Nail',spirit:'Scotch whisky',glass:'Rocks glass, one large cube',
+  method:'Build over ice and stir gently for ten seconds.',
+  ing:[['1½ oz','45 ml','Blended Scotch whisky'],['¾ oz','22 ml','Drambuie']],
+  garnish:'Lemon twist, squeezed over the top',taste:'Heather honey, orange peel, warm spice',
+  note:'Prefer it drier? Pull the Drambuie back to ½ oz.'},
+ choices:[{to:11,text:"Visit the cask warehouse"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+13:{n:13,kind:'detour',region:'scot',label:'Detour',title:'The Locals',
+ sense:['Itch','Everywhere'],
+ paras:[
+  "You slip outside to admire the glen at dusk. This is a mistake. The Highland midge is smaller than a comma and travels in clouds of thousands, and it has decided your ears are a buffet. You flap. You hop. You run, and you do not stop until you hit the stillhouse door, which the stillman opens with an expression of sympathy and no surprise at all.",
+  "“Ah,” he says. “You’ve met the locals.”"
+ ],
+ ask:'Somewhere indoors, quickly.',
+ choices:[{to:11,text:"Retreat to the cask warehouse"},{to:12,text:"Retreat to the fire"}]},
+
+/* ---------- Caribbean ---------- */
+20:{n:20,kind:'arrival',region:'carib',label:'Arrival',title:'Sugar, Salt, and Sea Smoke',
+ sense:['Breathe in','Molasses, tar, lime peel'],
+ paras:[
+  "Heat greets you like a warm towel as you step onto the docks of Bridgetown, Barbados. Gulls argue over a crate of limes. Somewhere nearby, a steel pan is rehearsing.",
+  "Rum began in places like this in the 1600s, as a clever use of leftovers. Sugar plantations produced molasses as a by-product, someone distilled it, and the result was so fierce that early drinkers called it “kill-devil”. Rum’s story is bound up with the sugar trade and the enslaved people whose labour built it, and that history deserves to be remembered whenever a glass is raised.",
+  "Three gangplanks lie before you. One leads to a steamer bound for Havana. One leads to a ship with black sails, whose captain is waving you aboard with the confidence of a man who has not read the fine print. The third belongs to a parrot."
+ ],
+ fact:"The Royal Navy gave sailors a daily rum ration for over three centuries. It ended on 31 July 1970, a date the fleet still calls Black Tot Day.",
+ choices:[
+  {to:21,text:"Board the steamer bound for Havana"},
+  {to:22,text:"Board the ship with the black sails"},
+  {to:23,text:"Listen to what the parrot has to say"}
+ ]},
+
+21:{n:21,kind:'pour',region:'carib',label:'The Pour',title:'The Steamer to Havana',
+ sense:['Feel','Hot sun on the deck rail, salt drying on your arms'],
+ paras:[
+  "Four days of sunsets later, you are in Cuba. Around 1898, the story goes, an American mining engineer named Jennings Cox was entertaining guests near a village called Daiquirí, ran short of gin, and reached for the local rum instead. He added lime and sugar, and named the result after the village.",
+  "Whether or not it happened quite that way, Cuban bartenders took the idea and polished it until it shone. By the 1930s, Havana bars such as El Floridita were famous for it. Look at the recipe. Three ingredients, and nothing to hide behind."
+ ],
+ recipe:{name:'Daiquiri',spirit:'Rum',glass:'Chilled coupe',
+  method:'Shake hard with ice for 12 seconds, then double strain.',
+  ing:[['2 oz','60 ml','Light rum'],['1 oz','30 ml','Fresh lime juice'],['¾ oz','22 ml','Simple syrup (1:1)']],
+  garnish:'Lime wheel, or nothing at all',taste:'Bright lime, grassy sugarcane, a cold clean finish'},
+ choices:[{to:22,text:"Climb aboard the ship with the black sails"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+22:{n:22,kind:'pour',region:'carib',label:'The Pour',title:'The Ship with Black Sails',
+ sense:['Listen','Rigging creaking, a fiddle, the captain humming'],
+ paras:[
+  "The captain does not say whether he is a pirate. He says he is “between engagements”. His crew drinks grog, which is simply rum cut with water, and the habit comes from the Royal Navy. In 1740, Admiral Edward Vernon, nicknamed Old Grog for his coat of coarse grogram cloth, ordered the daily rum ration watered down to keep his sailors steadier. Citrus joined the mix later, to keep scurvy away.",
+  "The drink you are handed is a Bermudian cousin of that old ration: dark rum, sharp ginger beer, a squeeze of lime. The legend says a sailor once looked at it and declared it the colour of a cloud only a fool or a dead man would sail under. That sailor gave the drink its name."
+ ],
+ recipe:{name:'Dark ’n’ Stormy',spirit:'Rum',glass:'Highball',
+  method:'Fill the glass with ice. Add ginger beer and lime juice, then float the rum on top.',
+  ing:[['2 oz','60 ml','Dark rum'],['4 oz','120 ml','Spicy ginger beer'],['½ oz','15 ml','Fresh lime juice']],
+  garnish:'Lime wedge',taste:'Molasses, black pepper heat, lime zing'},
+ choices:[{to:21,text:"Take the steamer to Havana"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+23:{n:23,kind:'detour',region:'carib',label:'Detour',title:'The Parrot’s Map',
+ sense:['Listen','A squawk, cane leaves rustling, a distant laugh'],
+ paras:[
+  "The parrot will sell you a treasure map for three crackers. The map has a large X, a smaller x, and the words DIG HERE written in three different handwritings. You follow it for three miles through the cane. You dig for an hour.",
+  "You find a rum shack, a plastic chair, and a woman who looks up from her newspaper. “You’re late,” she says. “The parrot sends everyone.” She hands you a lime and a glass of water, and points firmly back toward the docks."
+ ],
+ ask:'Back to the docks.',
+ choices:[{to:21,text:"Board the steamer bound for Havana"},{to:22,text:"Board the ship with the black sails"}]},
+
+/* ---------- England ---------- */
+30:{n:30,kind:'arrival',region:'eng',label:'Arrival',title:'Madam Geneva Comes to Town',
+ sense:['Breathe in','Crushed juniper, coal smoke, orange peel'],
+ paras:[
+  "The trunk drops you on a London street in about the year 1730. The air is horse, coal smoke, and juniper. Gin has taken the city by storm.",
+  "English soldiers had acquired a taste for Dutch genever on the Continent, which supposedly gave us the phrase “Dutch courage”. After a law in 1690 opened distilling to nearly anyone, Londoners started making their own spirit by the barrel. By the 1720s the Gin Craze was in full swing, and in 1751 William Hogarth engraved Gin Lane to warn everyone about it.",
+  "By rule, gin must taste mainly of juniper. Past that, distillers may add whatever botanicals they please. The street is rowdy, so you look for a way out. A shipping office advertises passage to India. A naval recruiter is shouting about lime juice. And on a wall, a wooden cat is watching you."
+ ],
+ fact:"London Dry describes a method, not a place. It means no sweeteners are added after distillation, so it can be made anywhere in the world.",
+ choices:[
+  {to:31,text:"Book passage on a ship to India"},
+  {to:32,text:"Follow the recruiter onto a Royal Navy ship"},
+  {to:33,text:"Whisper to the wooden cat"}
+ ]},
+
+31:{n:31,kind:'pour',region:'eng',label:'The Pour',title:'The Ship to India',
+ sense:['Feel','Humid air, a slow ceiling fan, ice clinking in a tall glass'],
+ paras:[
+  "You skip a century and land on the deck of a ship bound for India. In the 1800s, British officials and soldiers there took quinine, the bitter bark extract that fights malaria. It tasted terrible. Someone added sugar and soda water. Someone else added gin. Commercial tonic water arrived in the mid-1800s, and the Gin and Tonic was born, cold and fizzy and a little bitter, like a good conversation.",
+  "Quinine glows electric blue under ultraviolet light. Hold a blacklight to your glass sometime."
+ ],
+ recipe:{name:'Gin and Tonic',spirit:'Gin',glass:'Large wine glass or highball',
+  method:'Fill with ice, add the gin, top with tonic, and stir once.',
+  ing:[['2 oz','60 ml','London dry gin'],['4 oz','120 ml','Cold tonic water']],
+  garnish:'Lime wedge and a few juniper berries',taste:'Pine, citrus peel, a clean bitter edge',
+  note:'Open the tonic fresh. Flat tonic ruins everything.'},
+ choices:[{to:32,text:"Join the Royal Navy ship"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+32:{n:32,kind:'pour',region:'eng',label:'The Pour',title:'The Royal Navy',
+ sense:['Listen','Waves slapping the hull, a bosun’s whistle'],
+ paras:[
+  "The deck tilts. You are aboard a Royal Navy ship, and the surgeon is worried about scurvy. By the 1800s, British sailors received a daily ration of citrus juice, but raw juice spoils fast. In 1867 Lauchlin Rose patented a way to preserve lime juice with sugar, and Rose’s lime cordial went to sea. The officers mixed it with their gin.",
+  "One legend credits Surgeon Sir Thomas Gimlette with talking the officers into the habit. Another says the Gimlet is named for the little hand tool used to tap casks. Both stories are good. Neither is proven."
+ ],
+ recipe:{name:'Gimlet',spirit:'Gin',glass:'Chilled coupe',
+  method:'Shake with ice, then strain.',
+  ing:[['2 oz','60 ml','London dry gin'],['¾ oz','22 ml','Fresh lime juice'],['¾ oz','22 ml','Simple syrup']],
+  garnish:'Lime wheel',taste:'Sharp lime, juniper, a salt-air tang',
+  note:'Old-school version: swap the juice and syrup for Rose’s lime cordial, to taste.'},
+ choices:[{to:31,text:"Take passage to India"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+33:{n:33,kind:'detour',region:'eng',label:'Detour',title:'Puss and Mew',
+ sense:['Smell','Turpentine, mostly'],
+ paras:[
+  "In a lane off Blackfriars hangs a wooden plaque shaped like a cat, labelled PUSS AND MEW. A slot below it takes pennies. A tube pokes out from beneath one paw.",
+  "This is real. In 1736, an entrepreneur named Dudley Bradstreet got around the Gin Act by installing a cat-shaped vending machine. You whisper “Puss, give me two pennyworth of gin,” drop a coin, and a hand behind the wall pours a thimble of something through the tube. Some say these cat plaques gave us the name Old Tom gin.",
+  "You try it. Whatever it was, it was not gin. It tasted of turpentine and regret, and some 18th-century gin really did contain turpentine. You retreat, coughing, with a new respect for quality control."
+ ],
+ ask:'Something with a recipe, please.',
+ choices:[{to:31,text:"Take passage to India"},{to:32,text:"Join the Royal Navy ship"}]},
+
+/* ---------- Mexico ---------- */
+40:{n:40,kind:'arrival',region:'mex',label:'Arrival',title:'The Blue Fields',
+ sense:['Breathe in','Roasting agave, red earth, wood smoke'],
+ paras:[
+  "You step out of the trunk onto red volcanic soil. As far as you can see, rows of blue-grey agave ripple toward a distant volcano, spiky and sculptural as a field of stone flowers. This is Jalisco. The town of Tequila is a short walk away, and the landscape around it is a UNESCO World Heritage Site.",
+  "Tequila can only be made from blue Weber agave, a plant that takes six to eight years to mature. A jimador harvests it with a long-handled blade called a coa, trimming away the leaves until a heart the size of a pineapple remains. That is the piña. The piñas are roasted, crushed, fermented, and distilled. In 1795, José Antonio de Cuervo received the first official licence to make tequila commercially.",
+  "A jimador shows you three things. A bus stop with a sign for the coast. A cantina in town, doors propped open. And a spare coa."
+ ],
+ fact:"Agave is not a cactus. It is a relative of asparagus and lilies.",
+ choices:[
+  {to:41,text:"Catch the bus to the coast, where a famous cocktail is said to have been born"},
+  {to:42,text:"Join the lunch crowd at the cantina"},
+  {to:43,text:"Take the spare coa and try your hand at harvesting"}
+ ]},
+
+41:{n:41,kind:'pour',region:'mex',label:'The Pour',title:'A Dozen Claims to a Daisy',
+ sense:['Listen','A mariachi trumpet, a blender, laughter'],
+ paras:[
+  "Everyone in Mexico seems to have a cousin who invented the margarita. Some say Carlos “Danny” Herrera made it near Tijuana in 1938 for a customer who could only drink tequila. Others say socialite Margarita Sames mixed it in Acapulco in 1948. Bartenders in Juárez and Texas have claims of their own. Nobody can prove a thing.",
+  "Here is what we do know. Margarita is Spanish for daisy, and the Daisy is a classic family of cocktails: spirit, citrus, sweetener. Put tequila in the middle, add orange liqueur, and the mystery solves itself. Salt the rim if you like. It tames the lime and lets the agave sing."
+ ],
+ recipe:{name:'Margarita',spirit:'Tequila',glass:'Rocks glass, half-salted rim',
+  method:'Shake with ice, then strain over fresh ice.',
+  ing:[['2 oz','60 ml','Blanco tequila'],['1 oz','30 ml','Fresh lime juice'],['¾ oz','22 ml','Orange liqueur'],['¼ oz','7 ml','Agave syrup, optional']],
+  garnish:'Lime wheel',taste:'Lime, orange peel, green agave'},
+ choices:[{to:42,text:"Join the lunch crowd at the cantina"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+42:{n:42,kind:'pour',region:'mex',label:'The Pour',title:'Lunch in Tequila',
+ sense:['Listen','Plates clattering, church bells, orders called across a crowded room'],
+ paras:[
+  "In the town of Tequila, the lunch crowd is drinking Palomas, the most popular tequila drink in Mexico. The recipe is gloriously simple: tequila, lime, salt, and grapefruit soda, usually Squirt or Jarritos, and nobody apologises for it. Nobody is sure who invented it. One theory says it was named for the folk song “La Paloma”. The word means dove.",
+  "Down the bar, the cantina’s most famous drink is something else. At La Capilla, Don Javier Delgado Corona is credited with the Batanga, tequila and cola stirred with the same knife used to cut the lime. If you order one, the bartender will not blink."
+ ],
+ recipe:{name:'Paloma',spirit:'Tequila',glass:'Highball, salted rim',
+  method:'Build over ice. Add tequila, lime, and salt, then top with soda and stir once.',
+  ing:[['2 oz','60 ml','Blanco tequila'],['½ oz','15 ml','Fresh lime juice'],['1 pinch','','Salt'],['3 oz','90 ml','Grapefruit soda']],
+  garnish:'Grapefruit wedge',taste:'Grapefruit pith, salty-sweet, bright agave'},
+ choices:[{to:41,text:"Catch the bus to the coast"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+43:{n:43,kind:'detour',region:'mex',label:'Detour',title:'The Coa',
+ sense:['Feel','Sticky sap, a splintered pole, wounded dignity'],
+ paras:[
+  "You take the coa. It is heavier than it looks, a round, razor-sharp blade on a pole as long as a broom. The agave’s leaves end in spines that can pierce a boot. You swing and miss. You swing again, and a leaf snags your sleeve and holds on like an old friend.",
+  "The jimadores cheer, not unkindly. A good one can trim a plant in seconds. You have been tangled for ten minutes. One of them hands you a lime and a salt shaker, “for your pride”."
+ ],
+ ask:'Somewhere with a seat.',
+ choices:[{to:41,text:"Catch the bus to the coast"},{to:42,text:"Join the lunch crowd at the cantina"}]},
+
+/* ---------- Italy ---------- */
+50:{n:50,kind:'arrival',region:'ita',label:'Arrival',title:'The Hour of the Aperitivo',
+ sense:['Breathe in','Roasted coffee, orange peel, warm bread'],
+ paras:[
+  "You arrive in Turin at six in the evening, which is exactly the right time. The light is amber, the arcades are filling with people in good coats, and every café has put out small plates beside small glasses of something red or orange. This is aperitivo, the pre-dinner ritual that Italians treat with the seriousness of a sacrament.",
+  "Turin is where modern vermouth was born. In 1786, Antonio Benedetto Carpano began selling wine infused with wormwood, herbs, and spices from his shop near Piazza Castello. The name comes from the German word for wormwood, Wermut. The royal court of Savoy adored it, and soon so did everyone else. In the next century, bitter red liqueurs such as Campari joined it on the shelf.",
+  "Two doors beckon. One opens onto a long, dark bar with a bartender polishing glasses. The other opens onto a terrace of tiny orange drinks. You also have a train to catch in an hour, and you are tempted to say so."
+ ],
+ fact:"Aperitivo drinks are bitter on purpose. The bitterness is meant to wake the appetite before dinner.",
+ choices:[
+  {to:51,text:"Take the long, dark bar"},
+  {to:52,text:"Take the terrace of tiny orange drinks"},
+  {to:53,text:"Tell the barman you only have time for a quick one"}
+ ]},
+
+51:{n:51,kind:'pour',region:'ita',label:'The Pour',title:'The Dark Bar in Florence',
+ sense:['Listen','The clink of a bar spoon, ice settling, low conversation'],
+ paras:[
+  "The trunk lurches, the year becomes 1919, and the city becomes Florence. At Caffè Casoni, Count Camillo Negroni, a well-travelled gentleman, asks the bartender Fosco Scarselli to strengthen his usual Americano, which is Campari, sweet vermouth, and soda, by swapping the soda for gin. Scarselli adds an orange peel in place of the usual lemon, to mark the difference.",
+  "Soon the count’s friends are ordering “the Negroni way”. Equal parts, no fuss. It is bitter, sweet, and boozy all at once, and it asks for about a minute of your patience before it becomes a lifelong friend."
+ ],
+ recipe:{name:'Negroni',spirit:'Gin and bitters',glass:'Rocks glass, one large cube',
+  method:'Stir with ice for 20 seconds, then strain over a large cube.',
+  ing:[['1 oz','30 ml','London dry gin'],['1 oz','30 ml','Campari'],['1 oz','30 ml','Sweet vermouth']],
+  garnish:'Orange peel, squeezed over the glass',taste:'Bitter orange, herbs, vanilla, a bite of juniper'},
+ choices:[{to:52,text:"Cross to the terrace"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+52:{n:52,kind:'pour',region:'ita',label:'The Pour',title:'The Terrace in Venice',
+ sense:['See','Canals the colour of old glass, and a drink the colour of sunset'],
+ paras:[
+  "The trunk plops you down on a terrace in Venice. Order a Spritz. The word goes back to the 1800s, when Austrian soldiers and officials in the Veneto found the local wines too strong and asked for them “spritzen”, sprayed with water.",
+  "The drink grew up. In 1919, the Barbieri brothers of Padua created Aperol, a lighter, sweeter bitter-orange aperitivo, and over the following decades it became the colour of Italian summer. The recipe is easy to remember: three parts Prosecco, two parts Aperol, one part soda."
+ ],
+ recipe:{name:'Aperol Spritz',spirit:'Aperitivo',glass:'Large wine glass',
+  method:'Fill with ice. Add Prosecco, then Aperol, then a splash of soda.',
+  ing:[['3 oz','90 ml','Prosecco'],['2 oz','60 ml','Aperol'],['1 oz','30 ml','Soda water']],
+  garnish:'Half orange slice',taste:'Orange blossom, gentle bitterness, bubbles'},
+ choices:[{to:51,text:"Find the long, dark bar"},{to:2,text:"Pack your bag and return to the concourse"}]},
+
+53:{n:53,kind:'detour',region:'ita',label:'Detour',title:'The Quick One',
+ sense:['Taste','Salted almonds, olives, patience'],
+ paras:[
+  "You tell the barman you only have time for a quick one. He looks as though you have insulted his mother. He puts down his glass. “Un momento?” he says, and spends the next forty minutes teaching you how an aperitivo works. You sit. You sip. You eat something salty. You talk about nothing in particular.",
+  "You do not order a second drink so much as one appears. You miss your train. You find you do not mind at all."
+ ],
+ ask:'Since you are staying.',
+ choices:[{to:51,text:"Take the long, dark bar"},{to:52,text:"Take the terrace"}]},
+
+/* ---------- finale ---------- */
+99:{n:99,kind:'finale',label:'Journey’s End',title:'Journey’s End',
+ sense:['Breathe in','Peat smoke, lime, and orange peel, faintly'],
+ ask:'What now?'}
+};
+
+/* ---------- state ---------- */
+var KEY='wayfarers-pour-v1';
+function fresh(){return {cur:1,seen:[],pours:[],stamps:{},hist:[]};}
+var S=fresh();
+try{
+  var raw=window.localStorage.getItem(KEY);
+  if(raw){var o=JSON.parse(raw); if(o&&typeof o==='object'){ S=Object.assign(fresh(),o); }}
+}catch(err){}
+function save(){try{window.localStorage.setItem(KEY,JSON.stringify(S));}catch(err){}}
+function dateStr(){
+  try{return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).replace(/\./g,'').toUpperCase();}
+  catch(err){return '';}
+}
+
+/* ---------- helpers ---------- */
+function e(tag,cls,txt){
+  var x=document.createElement(tag);
+  if(cls){x.className=cls;}
+  if(txt!=null){x.textContent=txt;}
+  return x;
+}
+var uid=0;
+function bigStamp(key,isFresh){
+  var R=REGIONS[key], id='st'+(++uid), d=S.stamps[key]||dateStr();
+  var w=e('div','stamp'+(isFresh?' fresh':''));
+  w.setAttribute('role','img');
+  w.setAttribute('aria-label','Passport stamp: '+R.stamp+', '+R.code+', '+d);
+  w.innerHTML=
+   '<svg viewBox="0 0 120 120" aria-hidden="true">'+
+   '<defs><path id="'+id+'t" d="M 24,60 A 36,36 0 0 1 96,60"/><path id="'+id+'b" d="M 15,60 A 45,45 0 0 0 105,60"/></defs>'+
+   '<circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="3"/>'+
+   '<circle cx="60" cy="60" r="50" fill="none" stroke="currentColor" stroke-width="1"/>'+
+   '<circle cx="60" cy="60" r="31" fill="none" stroke="currentColor" stroke-width="1"/>'+
+   '<text font-family="\'DM Mono\',monospace" font-size="8.5" font-weight="500" letter-spacing="1.6" fill="currentColor"><textPath href="#'+id+'t" startOffset="50%" text-anchor="middle">'+R.stamp+'</textPath></text>'+
+   '<text font-family="\'DM Mono\',monospace" font-size="8" font-weight="500" letter-spacing="1.4" fill="currentColor"><textPath href="#'+id+'b" startOffset="50%" text-anchor="middle">'+d+'</textPath></text>'+
+   '<text x="60" y="67" text-anchor="middle" font-family="Gloock,Georgia,serif" font-size="22" fill="currentColor">'+R.code+'</text>'+
+   '</svg>';
+  return w;
+}
+
+function mkChoice(to,text,o){
+  o=o||{};
+  var li=document.createElement('li');
+  var b=e('button','choice'); b.type='button';
+  if(o.region){b.style.setProperty('--accent','var(--c-'+o.region+')');}
+  if(o.ring){b.append(e('span','ring',o.ring));}
+  var t=e('span','ctext'); t.append(e('span',null,text));
+  if(o.sub){t.append(e('span','csub',o.sub));}
+  b.append(t);
+  b.append(e('span','ref',to==='reset'?'new':'p. '+to));
+  if(typeof to==='number' && S.seen.indexOf(to)>-1){b.classList.add('seen');}
+  if(o.disabled){b.disabled=true;}else{b.addEventListener('click',function(){go(to);});}
+  li.append(b);
+  return li;
+}
+
+function recipeTag(p){
+  var r=p.recipe, R=REGIONS[p.region];
+  var t=e('section','tag');
+  t.append(e('span','k',r.spirit+' · '+R.short));
+  t.append(e('h2',null,r.name));
+  var ul=e('ul','ing');
+  r.ing.forEach(function(row){
+    var li=e('li');
+    var a=e('span','amt',row[0]);
+    if(row[1]){a.append(' ',e('i',null,'· '+row[1]));}
+    li.append(a,e('span',null,row[2]));
+    ul.append(li);
+  });
+  t.append(ul);
+  var dl=e('dl','rows');
+  function row(k,v,cls){dl.append(e('dt',null,k),e('dd',cls||null,v));}
+  row('Glass',r.glass);
+  row('Method',r.method);
+  row('Garnish',r.garnish);
+  row('Tastes of',r.taste,'say');
+  if(r.note){row('Note',r.note);}
+  t.append(dl);
+  return t;
+}
+
+/* ---------- drawing ---------- */
+function drawBar(){
+  var st=document.getElementById('stamps'); st.replaceChildren();
+  var rots=[-8,6,-4,7,-6];
+  Object.keys(REGIONS).forEach(function(k,i){
+    var R=REGIONS[k];
+    var b=e('button','mini',R.code); b.type='button';
+    b.style.setProperty('--c','var(--c-'+k+')');
+    b.style.setProperty('--rot',rots[i]+'deg');
+    if(S.stamps[k]){
+      b.classList.add('on');
+      b.setAttribute('aria-label','Return to '+R.name);
+      b.title=R.name+', stamped '+S.stamps[k];
+      b.addEventListener('click',function(){go(R.arrival);});
+    }else{
+      b.disabled=true;
+      b.setAttribute('aria-label',R.name+', not yet visited');
+    }
+    st.append(b);
+  });
+  document.getElementById('count').textContent=S.pours.length+' / '+TOTAL_POURS+' pours';
+}
+
+var resetArmed=false, resetTimer=null;
+function linkBtn(label,fn){
+  var b=e('button','linkbtn',label); b.type='button'; b.addEventListener('click',fn); return b;
+}
+function drawNav(){
+  var n=document.getElementById('nav'); n.replaceChildren();
+  var back=linkBtn('← Back',function(){
+    var t=S.hist.pop();
+    if(t!=null){go(t,false);}
+  });
+  back.disabled=S.hist.length===0;
+  var dep=linkBtn('Departures',function(){go(2);});
+  var rs=linkBtn(resetArmed?'Tap again to erase your stamps':'Reset passport',function(){
+    if(resetArmed){
+      resetArmed=false; clearTimeout(resetTimer); go('reset');
+    }else{
+      resetArmed=true; drawNav();
+      resetTimer=setTimeout(function(){resetArmed=false;drawNav();},4000);
+    }
+  });
+  n.append(back,dep,rs);
+}
+
+function draw(p,isFresh){
+  var L=document.getElementById('leaf');
+  L.replaceChildren();
+  L.dataset.region=p.region||'';
+  var R=p.region?REGIONS[p.region]:null;
+
+  var f=e('div','folio');
+  var a=e('span'); a.append('Page ',e('b',null,String(p.n)));
+  f.append(a,e('span',null,R?p.label+' · '+R.short:p.label));
+  L.append(f);
+
+  if(p.kind==='arrival'){L.append(bigStamp(p.region,isFresh));}
+
+  var title=p.title;
+  if(p.kind==='finale' && S.pours.length>=TOTAL_POURS){title='The Grand Tour';}
+  var h=e('h1',null,title); h.tabIndex=-1; L.append(h);
+
+  if(p.sense){
+    var s=e('p','sense'); s.append(e('span','k',p.sense[0]),e('em',null,p.sense[1])); L.append(s);
+  }
+  (p.paras||[]).forEach(function(t){L.append(e('p',null,t));});
+
+  if(p.fact){
+    var fa=e('aside','fact'); fa.append(e('span','k','Field note'),e('p',null,p.fact)); L.append(fa);
+  }
+  if(p.how){
+    var ho=e('aside','fact'); ho.append(e('span','k','How this book works'),e('p',null,p.how)); L.append(ho);
+  }
+  if(p.recipe){L.append(recipeTag(p));}
+
+  var ul=e('ul','choices');
+  var ask=p.ask||'What do you do?';
+
+  if(p.kind==='hub'){
+    Object.keys(REGIONS).forEach(function(k){
+      var Rg=REGIONS[k];
+      var got=Rg.pours.filter(function(x){return S.pours.indexOf(x)>-1;}).length;
+      ul.append(mkChoice(Rg.arrival,Rg.name,{region:k,ring:Rg.code,sub:Rg.spirit+' · '+got+' of 2 pours'}));
+    });
+    var need=HOME_AT-S.pours.length, ready=need<=0;
+    ul.append(mkChoice(99,ready?'Head home':'Head home (locked)',{
+      ring:'HOME',
+      sub:ready?'Your boarding pass is stamped and waiting':'Collect '+need+' more pour'+(need===1?'':'s')+' to unlock',
+      disabled:!ready
+    }));
+  }else if(p.kind==='finale'){
+    var total=S.pours.length;
+    var lead="The trunk is back at the end of the bar, a little heavier, smelling faintly of peat smoke and lime and orange peel. Your boarding pass is covered in stamps. Behind the bar, someone is polishing a glass and pretending not to have noticed you were gone.";
+    L.insertBefore(e('p',null,lead),L.querySelector('.sense').nextSibling);
+    var tally=total>=TOTAL_POURS
+      ? "Every stamp collected, every pour poured. The bartender slides one last glass across the bar without being asked."
+      : "You brought home "+total+" of "+TOTAL_POURS+" pours.";
+    L.append(e('p',null,tally));
+    var sorted=S.pours.slice().sort(function(x,y){return x-y;});
+    L.append(e('span','k sub-k','Your flight'));
+    var ol=e('ol','flight');
+    sorted.forEach(function(n){
+      var pg=PAGES[n]; if(!pg||!pg.recipe){return;}
+      var li=e('li');
+      li.append(e('span','nm',pg.recipe.name),e('span','meta',pg.recipe.spirit+' · '+REGIONS[pg.region].short+' · p. '+pg.n));
+      ol.append(li);
+    });
+    L.append(ol);
+    L.append(e('p',null,"Ask your bartender for the story behind any of these. They have more."));
+    Object.keys(REGIONS).forEach(function(k){
+      var Rg=REGIONS[k];
+      var got=Rg.pours.filter(function(x){return S.pours.indexOf(x)>-1;}).length;
+      if(got<2){
+        var left=2-got;
+        ul.append(mkChoice(Rg.arrival,'Return to '+Rg.name,{region:k,ring:Rg.code,sub:left+' pour'+(left===1?'':'s')+' still waiting'}));
+      }
+    });
+    ul.append(mkChoice(2,'Return to the concourse'));
+    ul.append(mkChoice('reset','Begin a new journey',{sub:'Clears your passport'}));
+  }else{
+    (p.choices||[]).forEach(function(c){ul.append(mkChoice(c.to,c.text));});
+  }
+  L.append(e('p','ask',ask));
+  L.append(ul);
+
+  drawBar(); drawNav();
+  window.scrollTo(0,0);
+  h.focus({preventScroll:true});
+}
+
+/* ---------- navigation ---------- */
+function go(to,push){
+  if(to==='reset'){S=fresh();save();to=1;push=false;}
+  var p=PAGES[to];
+  if(!p){to=1;p=PAGES[1];}
+  if(push!==false && S.cur!==to){S.hist.push(S.cur); if(S.hist.length>200){S.hist.shift();}}
+  S.cur=to;
+  var isFresh=false;
+  if(p.region && !S.stamps[p.region]){S.stamps[p.region]=dateStr(); isFresh=(p.kind==='arrival');}
+  if(S.seen.indexOf(to)<0){S.seen.push(to);}
+  if(p.recipe && S.pours.indexOf(to)<0){S.pours.push(to);}
+  save();
+  draw(p,isFresh);
+}
+
+document.getElementById('brand').addEventListener('click',function(){go(1);});
+go(PAGES[S.cur]?S.cur:1,false);
+})();
+</script>
+
+</body>
+</html>

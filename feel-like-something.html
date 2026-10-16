@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>I Feel Like Something</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=DM+Mono:wght@400;500&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{
+  /* Layout: a Victorian playbill frame on a full-bleed colour wash. The whole page re-tints to the mood you choose.
+     That colour change is the one bold move; type and rules stay quiet around it. */
+  --ground-l:#E4E7E2; --ground-d:#101512;
+  --accent-l:#8A2B1F; --accent-d:#F0A08F;
+  --ground:var(--ground-l);
+  --accent:var(--accent-l);
+  --ink:#16181D;
+  --ink-2:#3E4350;
+  --panel:rgba(255,255,255,.5);
+  --rule:rgba(22,24,29,.28);
+  --f-display:'Abril Fatface','Bodoni 72','Didot',Georgia,serif;
+  --f-body:'Libre Caslon Text','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --f-mono:'DM Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+:root[data-mood="whimsical"]{--ground-l:#E3D8F5;--ground-d:#1F1433;--accent-l:#6A35B8;--accent-d:#C7A8FF}
+:root[data-mood="methodical"]{--ground-l:#D5E3F2;--ground-d:#0E1B2B;--accent-l:#1F4E86;--accent-d:#8DB8EE}
+:root[data-mood="adventurous"]{--ground-l:#DBEAD2;--ground-d:#12231A;--accent-l:#2C6A33;--accent-d:#8FD39A}
+:root[data-mood="classic"]{--ground-l:#DAD6CC;--ground-d:#141310;--accent-l:#6B4F08;--accent-d:#E1C268}
+:root[data-mood="abrasive"]{--ground-l:#F2EE9E;--ground-d:#221F06;--accent-l:#7A1A05;--accent-d:#F2E85A}
+:root[data-mood="romantic"]{--ground-l:#EBD3DA;--ground-d:#26101A;--accent-l:#8A1C3C;--accent-d:#F0829F}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:var(--ground-d); --accent:var(--accent-d);
+    --ink:#F1F0EA; --ink-2:#BEC0C6;
+    --panel:rgba(255,255,255,.05); --rule:rgba(241,240,234,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:var(--ground-d); --accent:var(--accent-d);
+  --ink:#F1F0EA; --ink-2:#BEC0C6;
+  --panel:rgba(255,255,255,.05); --rule:rgba(241,240,234,.3);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font:400 17.5px/1.62 var(--f-body);
+  padding-inline:16px;padding-block:0 44px;
+  transition:background-color .5s ease,color .5s ease;
+}
+.wrap{max-width:660px;margin-inline:auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 18px;padding-block:16px 14px}
+.brand{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:400 1.1rem/1.2 var(--f-display);color:var(--ink)}
+.tools{display:flex;gap:18px}
+.linkbtn{
+  appearance:none;background:none;border:0;padding:8px 0;cursor:pointer;
+  font:400 12px/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);
+  text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:5px;
+}
+.linkbtn:hover:not(:disabled){color:var(--ink)}
+.linkbtn:disabled{opacity:.4;cursor:default;text-decoration:none}
+
+.page{
+  margin-block:8px 0;padding:24px 20px 26px;
+  background:var(--panel);border:2px solid var(--ink);
+  box-shadow:0 0 0 5px var(--ground),0 0 0 7px var(--ink);
+}
+@media (min-width:600px){.page{padding:34px 44px 38px}}
+
+.folio{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 14px;
+  padding-bottom:10px;margin-bottom:22px;border-bottom:1px solid var(--rule);
+  font:400 12px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+}
+.folio b{color:var(--accent);font-weight:500}
+.kick{display:block;margin-bottom:6px;font:500 12px/1.3 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+h1{
+  font:400 clamp(2.5rem,10vw,4.1rem)/1 var(--f-display);
+  margin:0 0 20px;text-wrap:balance;letter-spacing:-.005em;
+}
+h1:focus{outline:none}
+.page p{margin:0 0 1em;max-width:60ch}
+.page p.say{font-style:italic;font-size:1.12rem;line-height:1.55}
+
+.company{margin:22px 0 4px;padding:13px 0;border-block:1px dashed var(--rule)}
+.company .kick{margin-bottom:3px}
+.company p{margin:0;font-size:1rem;color:var(--ink-2)}
+
+.ask{margin:30px 0 12px!important;font:500 12px/1.4 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.ask b{color:var(--accent);font-weight:500}
+.choices{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.grid{grid-template-columns:1fr}
+@media (min-width:600px){.grid{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}}
+.choice{
+  appearance:none;width:100%;min-height:58px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;
+  padding:14px 16px;background:transparent;border:2px solid var(--ink);color:var(--ink);
+}
+.choice:hover{background:var(--ink);color:var(--ground)}
+.ctext{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.cmain{font:400 1.4rem/1.12 var(--f-display)}
+.csub{font:400 12.5px/1.4 var(--f-mono);color:var(--ink-2)}
+.ref{flex:none;font:500 12px/1 var(--f-mono);letter-spacing:.1em;color:var(--accent);white-space:nowrap}
+.choice:hover .csub,.choice:hover .ref{color:var(--ground)}
+
+.drinks{list-style:none;margin:6px 0 0;padding:0}
+.drink{padding:20px 0 18px;border-top:1px solid var(--rule)}
+.drink:first-child{border-top:3px double var(--ink)}
+.drink .no{display:block;margin-bottom:2px;font:500 11.5px/1.3 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.drink h2{font:400 clamp(1.8rem,6.5vw,2.3rem)/1.08 var(--f-display);margin:0 0 4px;text-wrap:balance}
+.drink .tastes{margin:0 0 8px;font-style:italic}
+.drink .build{margin:0 0 8px;font:400 13px/1.55 var(--f-mono);color:var(--ink-2)}
+.drink .note{margin:0;font-size:.98rem}
+
+.legal{margin:24px 0 0;font:400 12px/1.5 var(--f-mono);letter-spacing:.05em;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="brand" type="button">I feel like something…</button>
+    <div class="tools" id="tools"></div>
+  </header>
+  <main>
+    <article class="page" id="page"></article>
+    <p class="legal">Please drink responsibly. Where a cocktail’s origin is disputed, the book says so.</p>
+  </main>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- the paths: 6 moods, 2 flavours each, 3 cocktails each ---------- */
+var M=[
+ {key:'whimsical',n:10,label:'Whimsical',sub:'Tea parties, riddles, and impossible things',
+  paras:[
+   "You arrive at a table set for far too many guests. The Mad Hatter is pouring tea into a cup that is already full, announcing that it is always six o’clock, and asking a riddle that has no answer. Nothing here is the right size. The sugar bowl is a hat. The hat is a teapot. Above you, a grin hangs in the branches with no cat attached.",
+   "The Hatter leans across the table and lowers his voice to a stage whisper. “Do you prefer your impossible things bubbly, or as crisp as a garden at sunrise?”"],
+  company:['The Mad Hatter','Puck','Salvador Dalí'],
+  flavors:[
+   {n:11,label:'Sparkling and fruit forward',
+    line:"The Hatter taps a spoon on a champagne flute, which is also, somehow, his hat. “A toast to unbirthdays,” he declares. “Any of these will do.”",
+    drinks:[
+     ['Bellini','White peach, soft bubbles','White peach purée, Prosecco','Created at Harry’s Bar in Venice in 1948 and named for the painter Giovanni Bellini, whose pink-toned canvases inspired its colour.'],
+     ['Kir Royale','Blackcurrant, a little luxurious','Crème de cassis, Champagne','The Kir is named for Félix Kir, the mayor of Dijon, who made the blackcurrant-and-wine pairing famous. This is its sparkling cousin.'],
+     ['Rossini','Strawberry, ripe and rosy','Strawberry purée, Prosecco','Harry’s Bar again, this time honouring the composer Gioachino Rossini.']]},
+   {n:12,label:'Fresh and vibrant',
+    line:"Puck grins from behind a hedge, drops a sprig of mint into your glass, and vanishes. Take any of these into the garden.",
+    drinks:[
+     ['Pimm’s Cup','Cucumber, mint, summer fruit','Pimm’s No. 1, lemonade, cucumber, mint, strawberry','A Wimbledon tradition, built on a gin-based liqueur from a London oyster-bar owner named James Pimm.'],
+     ['Gin Basil Smash','Green, peppery, bright','Gin, fresh basil, lemon, simple syrup','Born in Hamburg in 2008, when bartender Jörg Meyer muddled a handful of basil into a gin sour.'],
+     ['Hugo Spritz','Elderflower, mint, a breeze of bubbles','Elderflower syrup, Prosecco, soda, mint, lime','Invented in 2005 in South Tyrol by bartender Roland Gruber.']]}
+  ]},
+
+ {key:'methodical',n:20,label:'Methodical',sub:'Measured, balanced, deduced',
+  paras:[
+   "It is a foggy evening at 221B Baker Street. Sherlock Holmes has laid the night out like a case: three bottles, one jigger, a notebook of measurements, and a rule that nothing be moved without cause. Dr. Watson would simply like a drink. Holmes would like it to be correct.",
+   "“Observe,” says Holmes, holding a glass to the lamp. “There are two kinds of excellent drink. One is direct and weighty. The other is a matter of exact balance. Which shall we deduce?”"],
+  company:['Sherlock Holmes','Dr. Watson','Marie Curie'],
+  flavors:[
+   {n:21,label:'Bold and direct',
+    line:"Holmes sets the ledger aside. “The evidence,” he says, “points to one of these three.”",
+    drinks:[
+     ['Old Fashioned','Whiskey, orange oils, quiet depth','Bourbon or rye, sugar, Angostura bitters, orange peel','It is the cocktail in its original 1806 definition: spirit, sugar, water, and bitters.'],
+     ['Manhattan','Dark, silky, spiced','Rye whiskey, sweet vermouth, bitters, cherry','Said to date to the 1870s at the Manhattan Club in New York.'],
+     ['Sazerac','Anise, herbs, rye heat','Rye, sugar, Peychaud’s bitters, absinthe rinse, lemon peel','The official cocktail of New Orleans, where it is stirred with great ceremony.']]},
+   {n:22,label:'Tart and tangy, in perfect balance',
+    line:"“Equal parts,” says Holmes, in the voice of a man closing a case. “Elementary.”",
+    drinks:[
+     ['Last Word','Herbal, green, lime-sharp','Gin, green Chartreuse, maraschino liqueur, lime','Equal parts of everything. A Prohibition-era drink from the Detroit Athletic Club, rescued from obscurity in Seattle in 2004.'],
+     ['Paper Plane','Bittersweet, citrusy, light','Bourbon, Aperol, Amaro Nonino, lemon','Equal parts again. Bartender Sam Ross created it in 2007 for a Chicago bar.'],
+     ['Corpse Reviver No. 2','Lemony, bright, faint anise','Gin, Cointreau, Lillet Blanc, lemon, absinthe rinse','A hair-of-the-dog from the 1930 Savoy Cocktail Book, built in equal parts.']]}
+  ]},
+
+ {key:'adventurous',n:30,label:'Adventurous',sub:'Maps, smoke, and far-off ports',
+  paras:[
+   "Phileas Fogg has wagered half his fortune that he can circle the globe in eighty days, and he has just discovered that you are coming along. The balloon is already rising. Below you the map unrolls: caravan routes, smoky coasts, island ports with names that taste of salt. Passepartout hands you a canteen, a compass, and a look of sincere concern.",
+   "“Two routes,” says Fogg, consulting his watch. “One follows the campfires. The other follows the trade winds. We leave in four minutes.”"],
+  company:['Phileas Fogg','Captain Nemo','Amelia Earhart'],
+  flavors:[
+   {n:31,label:'Smoky and spirited',
+    line:"Fogg consults his watch, then the horizon. “We have time for exactly one of these,” he says. “Choose well.”",
+    drinks:[
+     ['Penicillin','Honey, ginger, a curl of smoke','Blended Scotch, lemon, honey-ginger syrup, Islay Scotch float','Created by Sam Ross in New York in 2005, and already a modern classic.'],
+     ['Mezcal Negroni','Smoke, bitter orange, herbs','Mezcal, Campari, sweet vermouth','The Negroni, taken on a trip to Oaxaca.'],
+     ['Oaxaca Old Fashioned','Agave, smoke, chocolate','Reposado tequila, mezcal, agave syrup, bitters','Created by Phil Ward at Death & Co in New York in 2007.']]},
+   {n:32,label:'Tropical and untamed',
+    line:"The balloon lands on a white-sand beach. Passepartout is already hanging a hammock between two palms and pointing at the bar.",
+    drinks:[
+     ['Painkiller','Pineapple, coconut, nutmeg','Dark rum, pineapple juice, orange juice, cream of coconut, nutmeg','From the Soggy Dollar Bar on Jost Van Dyke in the British Virgin Islands, where guests swim ashore to drink.'],
+     ['Jungle Bird','Pineapple, bitter, a little wild','Dark rum, Campari, pineapple juice, lime, simple syrup','Born at the Aviary Bar in the Kuala Lumpur Hilton in 1978.'],
+     ['Mai Tai','Almond, lime, aged rum','Aged rum, orange curaçao, orgeat, lime','Credited to Trader Vic in Oakland in 1944, though Don the Beachcomber disputed it.']]}
+  ]},
+
+ {key:'classic',n:40,label:'Classic',sub:'Timeless, polished, always right',
+  paras:[
+   "The lights of West Egg blaze across the water. Jay Gatsby has hired an orchestra, a hundred lanterns, and a bartender who has never once been asked for anything new. Everyone is in white. A champagne tower is rising somewhere near the lawn. Gatsby, immaculate, raises a glass and gives you the smile that launched a thousand rumours.",
+   "“Tonight, old sport, nothing needs reinventing,” he says. “Only choosing.”"],
+  company:['Jay Gatsby','Jeeves','Coco Chanel'],
+  flavors:[
+   {n:41,label:'Bold and direct',
+    line:"Gatsby lifts his glass toward the green light across the bay. “To ordering the right thing the first time.”",
+    drinks:[
+     ['Dry Martini','Cold, crisp, botanical','Gin, dry vermouth, orange bitters, lemon twist or olive','The most debated drink in the world, and the proportions are the argument.'],
+     ['Vesper','Ice-cold, dry, slightly bitter','Gin, vodka, Lillet Blanc, lemon peel','Ian Fleming’s James Bond ordered it in the 1953 novel Casino Royale, and named it for a character in the story.'],
+     ['Boulevardier','A whiskey Negroni, warm and bitter','Bourbon, Campari, sweet vermouth','Linked to 1920s Paris and a writer named Erskine Gwynne, according to bartender Harry MacElhone.']]},
+   {n:42,label:'Fresh and elegant',
+    line:"On the lawn, the champagne tower catches the light. A waiter appears with a tray of the evening’s crispest classics.",
+    drinks:[
+     ['Mint Julep','Mint, bourbon, frost','Bourbon, mint, sugar, crushed ice','The Kentucky Derby’s drink, and the one Tom Buchanan mixes in The Great Gatsby.'],
+     ['French 75','Lemon, gin, champagne','Gin, lemon juice, sugar, Champagne','Named for a French field gun, because the kick was said to feel the same.'],
+     ['Gin Rickey','Lime, gin, cold fizz','Gin, lime, soda water','A Washington, D.C. classic from the 1880s, with no sugar at all.']]}
+  ]},
+
+ {key:'abrasive',n:50,label:'Abrasive',sub:'Bitter, sharp, and unbothered',
+  paras:[
+   "Ebenezer Scrooge looks up from his ledger and informs you that you are letting the warmth out. The counting-house is cold, the candle is short, and the only decoration is a very small bag of coal. He dislikes small talk. He dislikes cheer. He is, however, quietly fond of a drink with enough edge to cut glass.",
+   "“Humbug,” he mutters, pushing a stool toward you with his boot. “But make it a good one.”"],
+  company:['Ebenezer Scrooge','Heathcliff','Dorothy Parker'],
+  flavors:[
+   {n:51,label:'Bitter and unapologetic',
+    line:"Scrooge squints at the glass as though it owes him money. “Bitter,” he says, with something close to approval. “Good.”",
+    drinks:[
+     ['Negroni','Bitter orange, herbs, sharp edges','Gin, Campari, sweet vermouth','Born in Florence in 1919 and unapologetic ever since.'],
+     ['Black Manhattan','Bittersweet, dark herbs','Rye, Averna amaro, Angostura and orange bitters','Created by Todd Smith in San Francisco in 2005, swapping the vermouth for an amaro.'],
+     ['Toronto','Menthol, bitter, a little smoky','Rye, Fernet-Branca, simple syrup, bitters','A 1920s classic that gives Fernet-Branca something to do.']]},
+   {n:52,label:'Sharp and sour',
+    line:"“Sharp enough to settle a debt,” Scrooge mutters, and, for the first time all evening, almost smiles.",
+    drinks:[
+     ['Whiskey Sour','Lemon, whiskey, a pinch of cheek','Bourbon or rye, lemon, sugar, optional egg white','A recipe for it appears in Jerry Thomas’s 1862 bartender’s guide.'],
+     ['Pisco Sour','Lime, frothy, aromatic','Pisco, lime, simple syrup, egg white, Angostura bitters','Created in Lima in the 1920s by an American bartender named Victor Vaughen Morris.'],
+     ['Sidecar','Lemon, cognac, orange','Cognac, Cointreau, lemon juice','Paris and London both claim it, from around the First World War.']]}
+  ]},
+
+ {key:'romantic',n:60,label:'Romantic',sub:'Candlelight and unfinished sentences',
+  paras:[
+   "A ballroom at Pemberley, lit entirely by candles. Mr. Darcy and Miss Elizabeth Bennet are circling each other with the grace of two people who would sooner perish than admit what they feel. Across the room, Cyrano de Bergerac is composing something extravagant on the back of a menu. A string quartet plays softly, and every glass looks lovely in the light.",
+   "“You might begin with something delicate,” murmurs Cyrano, “or with something that lingers.”"],
+  company:['Elizabeth Bennet','Cyrano de Bergerac','Romeo and Juliet'],
+  flavors:[
+   {n:61,label:'Floral and rosy',
+    line:"Across the ballroom, Elizabeth raises an eyebrow and a glass. Mr. Darcy, after a considerable pause, does the same.",
+    drinks:[
+     ['Aviation','Violet, lemon, a hint of cherry','Gin, maraschino liqueur, crème de violette, lemon','Hugo Ensslin published it in 1916. The violet gives it its sky-coloured shimmer.'],
+     ['Clover Club','Raspberry, lemon, silky foam','Gin, raspberry syrup, lemon, egg white','Named for a Philadelphia gentlemen’s club of the 1890s.'],
+     ['Cosmopolitan','Cranberry, citrus, cheerful','Vodka, Cointreau, cranberry, lime','Toby Cecchini’s 1988 version at The Odeon in New York helped make it famous.']]},
+   {n:62,label:'Rich and velvety',
+    line:"As the candles burn low, Cyrano slides a dessert menu across the table. “For when words fail,” he says. “Order any of these.”",
+    drinks:[
+     ['Espresso Martini','Coffee, cocoa, silk','Vodka, coffee liqueur, fresh espresso, simple syrup','Bartender Dick Bradsell made the first one in London in the 1980s.'],
+     ['Brandy Alexander','Chocolate, cream, nutmeg','Cognac, crème de cacao, cream, nutmeg','A dessert in a coupe, fashionable since the 1920s.'],
+     ['Irish Coffee','Coffee, whiskey, a cloud of cream','Irish whiskey, hot coffee, brown sugar, lightly whipped cream','Created in 1943 by chef Joe Sheridan at Foynes to warm weary flying-boat passengers.']]}
+  ]}
+];
+
+/* ---------- build the page table ---------- */
+var PAGES={};
+PAGES[1]={n:1,kind:'cover',title:'I feel like something…'};
+M.forEach(function(m){
+  PAGES[m.n]={n:m.n,kind:'mood',mood:m.key,m:m};
+  m.flavors.forEach(function(f,i){
+    PAGES[f.n]={n:f.n,kind:'drinks',mood:m.key,m:m,f:f,other:m.flavors[1-i]};
+  });
+});
+
+/* ---------- helpers ---------- */
+function e(tag,cls,txt){
+  var x=document.createElement(tag);
+  if(cls){x.className=cls;}
+  if(txt!=null){x.textContent=txt;}
+  return x;
+}
+function lower(s){return s.charAt(0).toLowerCase()+s.slice(1);}
+var hist=[], cur=null;
+
+function mkChoice(to,main,sub,wide){
+  var li=document.createElement('li');
+  if(wide){li.className='wide';}
+  var b=e('button','choice'); b.type='button';
+  var t=e('span','ctext'); t.append(e('span','cmain',main));
+  if(sub){t.append(e('span','csub',sub));}
+  b.append(t,e('span','ref',to==='random'?'turn any page':'turn to p. '+to));
+  b.addEventListener('click',function(){go(to);});
+  li.append(b);
+  return li;
+}
+
+/* ---------- draw ---------- */
+function draw(p){
+  var root=document.documentElement;
+  if(p.mood){root.setAttribute('data-mood',p.mood);}else{root.removeAttribute('data-mood');}
+
+  var P=document.getElementById('page'); P.replaceChildren();
+
+  var folio=e('div','folio');
+  var left=e('span'); left.append('Page ',e('b',null,String(p.n)));
+  var right='';
+  if(p.kind==='mood'){right=p.m.label;}
+  if(p.kind==='drinks'){right=p.m.label+' › '+p.f.label;}
+  if(p.kind==='cover'){right='Start here';}
+  folio.append(left,e('span',null,right));
+  P.append(folio);
+
+  var h,ul;
+
+  if(p.kind==='cover'){
+    P.append(e('span','kick','A cocktail adventure'));
+    h=e('h1',null,p.title); h.tabIndex=-1; P.append(h);
+    P.append(e('p',null,"Every cocktail starts with a mood. Tell us yours, follow the story, and turn the pages until a drink finds you."));
+    P.append(e('p',null,"Choose an option, then turn to the page it names. Two turns will land you on a page of cocktails to match."));
+    P.append(e('p','ask','I feel like something…'));
+    ul=e('ul','choices grid');
+    M.forEach(function(m){ul.append(mkChoice(m.n,m.label,m.sub));});
+    ul.append(mkChoice('random','Leaving it to fate','Let the book decide',true));
+    P.append(ul);
+  }
+
+  if(p.kind==='mood'){
+    P.append(e('span','kick','I feel like something…'));
+    h=e('h1',null,p.m.label+'.'); h.tabIndex=-1; P.append(h);
+    P.append(e('p',null,p.m.paras[0]));
+    P.append(e('p','say',p.m.paras[1]));
+    var co=e('aside','company'); co.append(e('span','kick','In good company'),e('p',null,p.m.company.join(' · '))); P.append(co);
+    var ask=e('p','ask'); ask.append('I feel like something ',e('b',null,lower(p.m.label)),', and I want it…'); P.append(ask);
+    ul=e('ul','choices grid');
+    p.m.flavors.forEach(function(f){ul.append(mkChoice(f.n,f.label));});
+    P.append(ul);
+  }
+
+  if(p.kind==='drinks'){
+    P.append(e('span','kick','Something '+lower(p.m.label)+', '+lower(p.f.label)));
+    h=e('h1',null,p.f.label+'.'); h.tabIndex=-1; P.append(h);
+    P.append(e('p','say',p.f.line));
+    var ol=e('ol','drinks');
+    p.f.drinks.forEach(function(d,i){
+      var li=e('li','drink');
+      li.append(e('span','no','No. '+(i+1)),e('h2',null,d[0]),e('p','tastes',d[1]),e('p','build',d[2]),e('p','note',d[3]));
+      ol.append(li);
+    });
+    P.append(ol);
+    P.append(e('p','ask','Not quite right?'));
+    ul=e('ul','choices grid');
+    ul.append(mkChoice(p.other.n,'Try something '+lower(p.other.label),p.m.label));
+    ul.append(mkChoice(1,'Choose a different mood','Back to the beginning'));
+    P.append(ul);
+  }
+
+  var back=document.getElementById('tools').querySelector('[data-back]');
+  if(back){back.disabled=hist.length===0;}
+  window.scrollTo(0,0);
+  if(h){h.focus({preventScroll:true});}
+}
+
+/* ---------- navigation ---------- */
+function go(to,push){
+  if(to==='random'){to=M[Math.floor(Math.random()*M.length)].n;}
+  var p=PAGES[to]; if(!p){to=1;p=PAGES[1];}
+  if(push!==false && cur!==null && cur!==to){hist.push(cur);}
+  cur=to;
+  draw(p);
+}
+
+var tools=document.getElementById('tools');
+var bk=e('button','linkbtn','← Back'); bk.type='button'; bk.setAttribute('data-back','1'); bk.disabled=true;
+bk.addEventListener('click',function(){var t=hist.pop(); if(t!=null){go(t,false);}});
+var st=e('button','linkbtn','Start over'); st.type='button';
+st.addEventListener('click',function(){hist=[];go(1,false);});
+tools.append(bk,st);
+document.getElementById('brand').addEventListener('click',function(){hist=[];go(1,false);});
+
+go(1,false);
+})();
+</script>
+
+</body>
+</html>
