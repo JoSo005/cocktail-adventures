@@ -1,0 +1,28 @@
+# Files that should stay out of the repository
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Drafts and scratch work
+drafts/
+scratch/
+*.bak
+*.tmp
+*.log
+
+# Secrets (never commit these)
+.env
+*.key
