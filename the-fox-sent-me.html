@@ -1,0 +1,641 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0}</style></head><body><title>The Fox Sent Me</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Limelight&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap">
+<style>
+:root{
+  /* Layout: one bound page on a sage desk. A sticky matchbook above it keeps score: each door you find strikes
+     a match in that door's own color. Everything else stays quiet so the matches carry the color. */
+  --ground:#D3D9C8;
+  --panel:#EEF1E6;
+  --ink:#17251D;
+  --ink-2:#44554B;
+  --rule:rgba(23,37,29,.28);
+  --wood:#B9A275;
+  --head:#6A2A1E;
+  --fox:#AE3F0C;
+  --c-library:#8B1E2D;
+  --c-stables:#5F5F10;
+  --c-speakeasy:#855400;
+  --c-rooftop:#4A3D9A;
+  --c-apothecary:#0A6B63;
+  --c-pastry:#B3225F;
+  --c-conservatory:#1E7336;
+  --c-ballroom:#2F6490;
+  --c-cellar:#7A2A6B;
+  --accent:var(--fox);
+  --f-display:'Limelight','Poiret One','Didot',Georgia,serif;
+  --f-body:'Old Standard TT','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --f-type:'Special Elite','Courier New',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1913; --panel:#16251C; --ink:#ECEADC; --ink-2:#AFBDB2; --rule:rgba(236,234,220,.28);
+    --wood:#8C7A54; --head:#7C3A2C; --fox:#FF9A5C;
+    --c-library:#F2939F; --c-stables:#CFCB62; --c-speakeasy:#F5BC52; --c-rooftop:#B4ABF6; --c-apothecary:#62D4C6;
+    --c-pastry:#F58EB8; --c-conservatory:#86D79C; --c-ballroom:#8DBDEE; --c-cellar:#E08CD3;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1913; --panel:#16251C; --ink:#ECEADC; --ink-2:#AFBDB2; --rule:rgba(236,234,220,.28);
+  --wood:#8C7A54; --head:#7C3A2C; --fox:#FF9A5C;
+  --c-library:#F2939F; --c-stables:#CFCB62; --c-speakeasy:#F5BC52; --c-rooftop:#B4ABF6; --c-apothecary:#62D4C6;
+  --c-pastry:#F58EB8; --c-conservatory:#86D79C; --c-ballroom:#8DBDEE; --c-cellar:#E08CD3;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font:400 18px/1.62 var(--f-body);
+  padding-inline:16px;padding-block:0 52px;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:680px;margin-inline:auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* sticky matchbook bar */
+.bar{background:var(--ground);border-bottom:1px solid var(--rule);padding-block:12px 10px}
+@media (min-width:600px){.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}}
+.bar-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 18px}
+.brand{appearance:none;background:none;border:0;padding:0;cursor:pointer;font:400 1.3rem/1.2 var(--f-display);color:var(--ink)}
+.tools{display:flex;flex-wrap:wrap;gap:0 18px}
+.linkbtn{
+  appearance:none;background:none;border:0;padding:8px 0;cursor:pointer;
+  font:400 13px/1.2 var(--f-type);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:5px;
+}
+.linkbtn:hover:not(:disabled){color:var(--ink)}
+.linkbtn:disabled{opacity:.4;cursor:default;text-decoration:none}
+.bar-sub{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 18px;margin-top:2px}
+.matchbook{display:flex;gap:7px}
+.match{
+  appearance:none;background:none;border:0;padding:0;width:20px;height:46px;
+  display:flex;flex-direction:column;align-items:center;cursor:pointer;
+}
+.match:disabled{cursor:default}
+.head{width:12px;height:12px;border-radius:50%;background:var(--head);box-shadow:inset 0 0 0 1px var(--rule)}
+.stick{width:4px;height:30px;background:var(--wood);border-radius:0 0 1px 1px}
+.match.lit .head{background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent),0 0 12px var(--c)}
+.match.lit .stick{background:linear-gradient(var(--ink-2) 0 28%,var(--wood) 28% 100%)}
+.match.lit:hover{transform:translateY(-2px)}
+.match.strike .head{animation:flare 1s ease-out 1}
+@keyframes flare{0%{transform:scale(.4);opacity:0}30%{transform:scale(1.9);opacity:1}100%{transform:scale(1)}}
+.tally{margin:0;padding-bottom:2px;font:400 13px/1.3 var(--f-type);letter-spacing:.06em;color:var(--ink-2)}
+
+/* the page */
+.leaf{
+  position:relative;margin-top:16px;
+  background:var(--panel);border:1px solid var(--ink);
+  padding:26px 22px 30px;
+}
+.leaf[data-dest]{background:color-mix(in srgb,var(--accent) 7%,var(--panel))}
+.leaf::before{content:"";position:absolute;inset:6px;border:1px solid var(--rule);pointer-events:none}
+@media (min-width:600px){.leaf{padding:38px 50px 42px}}
+.leaf[data-dest="library"]{--accent:var(--c-library)}
+.leaf[data-dest="stables"]{--accent:var(--c-stables)}
+.leaf[data-dest="speakeasy"]{--accent:var(--c-speakeasy)}
+.leaf[data-dest="rooftop"]{--accent:var(--c-rooftop)}
+.leaf[data-dest="apothecary"]{--accent:var(--c-apothecary)}
+.leaf[data-dest="pastry"]{--accent:var(--c-pastry)}
+.leaf[data-dest="conservatory"]{--accent:var(--c-conservatory)}
+.leaf[data-dest="ballroom"]{--accent:var(--c-ballroom)}
+.leaf[data-dest="cellar"]{--accent:var(--c-cellar)}
+
+.folio{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
+  padding-bottom:10px;margin-bottom:20px;border-bottom:1px solid var(--rule);
+}
+.pg{display:flex;align-items:baseline;gap:10px}
+.pg small{font:400 13px/1 var(--f-type);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.pg b{font:400 2.3rem/1 var(--f-display);color:var(--accent)}
+.where{font:400 13px/1.3 var(--f-type);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);text-align:right}
+
+.kick{display:block;margin-bottom:8px;font:400 13px/1.3 var(--f-type);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font:400 clamp(2rem,7.5vw,3rem)/1.06 var(--f-display);margin:0 0 18px;text-wrap:balance}
+h1:focus{outline:none}
+.leaf p{margin:0 0 1em;max-width:60ch}
+
+.warn{margin:22px 0;padding:16px 18px;border:2px solid var(--ink)}
+.warn p:last-child{margin-bottom:0}
+.warn strong{font:400 1.15rem/1 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+
+.finale{margin:6px 0 4px}
+.end{
+  display:inline-block;margin:0 10px 4px 0;padding:3px 14px 1px;
+  border:3px double var(--accent);color:var(--accent);
+  font:400 1.25rem/1.4 var(--f-display);letter-spacing:.14em;text-transform:uppercase;
+  transform:rotate(-3deg);
+}
+.end.fresh{animation:thunk .55s cubic-bezier(.2,.9,.3,1.15) both}
+@keyframes thunk{0%{transform:rotate(-14deg) scale(1.7);opacity:0}60%{opacity:1}100%{transform:rotate(-3deg) scale(1);opacity:1}}
+.yourdrink b{font-weight:700}
+
+.fox{margin:22px 0 4px;padding:13px 0;border-block:1px dashed var(--rule-2,var(--rule))}
+.fox p{margin:0;font-size:1rem;color:var(--ink-2);font-style:italic}
+
+.menu-k{margin:26px 0 4px!important;font:400 13px/1.3 var(--f-type);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.menu{list-style:none;margin:0;padding:0}
+.drink{padding:18px 0 16px;border-top:1px solid var(--rule)}
+.drink:first-child{border-top:3px double var(--ink)}
+.badge{
+  display:inline-block;margin-bottom:6px;padding:1px 9px;border:1px solid var(--accent);color:var(--accent);
+  font:400 12px/1.5 var(--f-type);letter-spacing:.12em;text-transform:uppercase;
+}
+.drink h2{font:400 clamp(1.5rem,5.5vw,1.9rem)/1.1 var(--f-display);margin:0 0 4px;text-wrap:balance}
+.drink .taste{margin:0 0 8px;font-style:italic}
+.drink .build{margin:0 0 8px;font:400 14px/1.55 var(--f-type);color:var(--ink-2)}
+.drink .lore{margin:0;font-size:.98rem}
+
+.nine{margin:22px 0 4px;padding:14px 16px;border:2px dashed var(--accent)}
+.nine p{margin:0;font-style:italic}
+
+.ask{margin:28px 0 12px!important;font:400 13px/1.3 var(--f-type);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.choices{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.choice{
+  appearance:none;width:100%;cursor:pointer;text-align:left;
+  padding:14px 16px;background:transparent;border:1.5px solid var(--ink);
+  font-size:1.02rem;line-height:1.45;
+}
+.choice:hover{background:var(--ink);color:var(--panel)}
+.choice .turn b{font:400 1.15rem/1 var(--f-display);color:var(--accent);padding-inline:1px}
+.choice:hover .turn b{color:var(--panel)}
+
+.legal{margin:24px 0 0;font:400 13px/1.55 var(--f-type);letter-spacing:.04em;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="bar-top">
+      <button class="brand" id="brand" type="button">The Fox Sent Me</button>
+      <div class="tools" id="tools"></div>
+    </div>
+    <div class="bar-sub">
+      <div class="matchbook" id="matchbook" role="group" aria-label="Matchbook of doors found"></div>
+      <p class="tally" id="tally"></p>
+    </div>
+  </header>
+  <main>
+    <article class="leaf" id="leaf"></article>
+    <p class="legal">Please drink responsibly. Cocktail origin stories are often disputed, and where a tale is a legend, the book says so. Every door has an alcohol-free option.</p>
+  </main>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- page builders ---------- */
+var D={};
+function story(k,title,paras,choices){D[k]={kind:'story',title:title,paras:paras,choices:choices};}
+function dead(k,title,paras,drink,back){D[k]={kind:'dead',title:title,paras:paras,drink:drink,back:back};}
+function dest(k,name,paras,fox,drinks){D[k]={kind:'dest',title:name,paras:paras,fox:fox,drinks:drinks};}
+
+/* ---------- the book ---------- */
+story('start','A Matchbook in the Rain',[
+ "Rain is hammering the pavement when a man in a green coat presses a matchbook into your hand. “Tell Rosie the Fox sent you,” he whispers, and he is gone. Inside the cover is an address.",
+ "You are, by this point, extremely wet."],
+ [["If you follow the address,","bookshop"],["If you toss the matchbook and go home,","home"],["If you read the rest of the matchbook first,","matchbook"]]);
+
+story('bookshop','The Bookshop',[
+ "The address is a bookshop, closed for the night. A bookcase swings open and a doorman looks you over. He has the shoulders of a wardrobe and the manners of a butler.",
+ "“Password?”"],
+ [["If you say “The Fox sent me,”","lobby"],["If you bluff and say “Rosie sent me,”","alley"],["If you pretend to browse while you think,","browse"]]);
+
+dead('home','A Sensible Decision',[
+ "You go home and dry off. For the rest of your life you wonder what was behind that matchbook."],
+ "a glass of water.",'start');
+
+story('matchbook','The Fine Print',[
+ "The matchbook is bottle green with gold lettering: HOTEL RENARD. Underneath, in smaller type: CLOSED FOR RENOVATIONS, 1919.",
+ "Inside there are nine matches, which seems like a lot of matches for one address. On the flap, someone has written in pencil: Nine doors. One match each. Strike wisely. Below that, in ink: Please do not read this in the rain. The ink is running."],
+ [["If you put the matchbook away and follow the address,","bookshop"],["If you decide this is all too much and go home,","home"]]);
+
+story('browse','Light Reading',[
+ "You browse. Every spine on the shelves is blank except one, which reads How to Get Into Places You Weren’t Invited, Volume Two. Volume One is missing.",
+ "The doorman clears his throat in a way that has a deadline."],
+ [["If you give in and say “The Fox sent me,”","lobby"],["If you take a chance and say “Rosie sent me,”","alley"]]);
+
+dead('alley','The Alley',[
+ "The doorman smiles and presses a button. Sirens begin to wail down the street, and you spend the evening in an alley.",
+ "It is a decent alley. There is a crate to sit on."],
+ "rainwater, collected in your hat.",'bookshop');
+
+story('lobby','Hotel Renard',[
+ "Behind the bookcase is a grand hotel lobby of marble and brass, lit by a chandelier the size of a small car. A sign over the front desk reads HOTEL RENARD, CLOSED FOR RENOVATIONS, 1919. The renovations appear to have been abandoned in favor of a party.",
+ "A woman in a black dress looks up from a ledger. “I’m Rosie. You’ll be the Fox’s friend. The Fox is out, which is when the Fox is most helpful.” She points out three ways onward: a grand staircase, a tiled corridor that smells of butter, and a garden door propped open with a boot."],
+ [["If you take the grand staircase,","stairs"],["If you follow the smell of butter down the service corridor,","servicehall"],["If you slip out through the garden door,","courtyard"],["If you ask Rosie for a recommendation,","rosie"]]);
+
+story('rosie','Professional Advice',[
+ "“What would you recommend?” you ask. Rosie considers this with the gravity of a surgeon.",
+ "“Leaving the lobby,” she says. “It is the only room in the building with no drinks in it.” She returns to her ledger, which has nine columns and a great many ink blots."],
+ [["If you take the grand staircase,","stairs"],["If you follow the smell of butter down the service corridor,","servicehall"],["If you slip out through the garden door,","courtyard"]]);
+
+/* upstairs wing */
+story('stairs','The Grand Staircase',[
+ "The staircase curves up into a hush that smells of leather, cedar and old paper. On the first landing there are three ways to go. A pair of tall oak doors with a brass plaque: READING ROOM. A gilded door through which a waltz is leaking. And an iron ladder bolted to the wall, rising to a hatch marked ROOF.",
+ "A card hangs from the ladder: THE FOX DOES NOT RECOMMEND THIS."],
+ [["If you try the oak doors,","library_door"],["If you try the gilded door,","ballroom_door"],["If you take the ladder anyway,","ladder"],["If you go back down to the lobby,","lobby"]]);
+
+story('library_door','Silence, Please',[
+ "The oak doors are locked. A brass plaque says SILENCE. A smaller plaque beneath it says THIS MEANS YOU. Below that hang a speaking tube and a card in tidy handwriting: PLEASE WHISPER THE TITLE OF THE BOOK YOU SEEK."],
+ [["If you whisper “something about foxes,”","library"],["If you shout “OPEN!” to save time,","shushed"],["If you try the gilded door next door instead,","ballroom_door"]]);
+
+dead('shushed','Shh',[
+ "The speaking tube carries your voice through the entire building. Somewhere, forty books close at once. A librarian appears beside you without making a sound and raises a single finger."],
+ "a cup of lukewarm tea, served in complete silence.",'library_door');
+
+story('ballroom_door','The Gilded Door',[
+ "The ballroom is mid-waltz. Two hundred dancers turn beneath a ceiling painted with clouds, and an eight-piece orchestra plays with the weary dignity of professionals paid by the hour.",
+ "A woman in a silver dress detaches herself from the crowd and offers you a gloved hand. “Do you dance?” Behind her, glass doors stand open onto a moonlit balcony."],
+ [["If you take her hand,","dance"],["If you slip out to the balcony,","balcony"],["If you retreat to the staircase,","stairs"]]);
+
+story('dance','The Waltz',[
+ "She leads. You follow. By the second turn you have stopped being alarmed. By the fourth you are, briefly and without warning, graceful.",
+ "The orchestra changes key upward by a half step, the way orchestras do when they want you to feel something. You do."],
+ [["If you stay for one more dance,","ballroom"],["If you cut in on a couple beside the champagne tower,","cutin"],["If you step out for some air,","balcony"]]);
+
+dead('cutin','A Tap on the Shoulder',[
+ "You tap a gentleman in white tie on the shoulder. He turns slowly. He is the reigning foxtrot champion of three counties, and he has been waiting all evening for an excuse.",
+ "You leave the floor gracefully, in four counts, between two waiters."],
+ "a ladle of punch, offered by a very polite bouncer.",'dance');
+
+story('balcony','The Balcony',[
+ "A stone balcony runs along the back of the hotel, which turns out to sit on the very lip of a canyon. Far below, a river catches the moonlight, and the wind comes up smelling of sage.",
+ "At the end of the balcony, a spiral iron staircase winds up into the dark. A lantern hangs from its first step, as if someone expected you. In the other direction, a second stair drops toward a glass dome glowing green in the night."],
+ [["If you climb the spiral staircase,","rooftop"],["If you follow the iron steps down to the glowing dome,","conservatory"],["If you rejoin the dance floor,","ballroom"]]);
+
+story('ladder','The Ladder',[
+ "The ladder is cold, slightly damp and a good deal taller than it looked. Halfway up you realize the sign was a dare. The hatch above you is propped open, and starlight is leaking through."],
+ [["If you keep climbing,","rooftop"],["If you look down to see how far you’ve come,","lookdown"],["If you climb back down,","stairs"]]);
+
+dead('lookdown','Do Not Look Down',[
+ "You look down. This is the whole of the mistake. The staircase has become very small, the lobby floor has become a rumor, and the ladder has become, in your hands, a different kind of ladder.",
+ "A footman on the landing observes you with professional calm."],
+ "a paper bag, to breathe into. Slowly.",'ladder');
+
+/* service wing */
+story('servicehall','The Service Corridor',[
+ "The corridor is tiled, steamy and warm, and smells of butter and caramelizing sugar. Copper pans swing from hooks overhead like very serious wind chimes.",
+ "A swinging door with a porthole leads to the kitchen. A narrow staircase descends beside a sign reading BOILER ROOM, NO ENTRY, and from somewhere below comes the faint sound of a trumpet. In the wall, a small hatch opens onto a box and two ropes: a dumbwaiter, built for a ham."],
+ [["If you push through the swinging door,","kitchen"],["If you ignore the sign and go down the stairs,","boilerstairs"],["If you climb into the dumbwaiter,","dumbwaiter"],["If you go back to the lobby,","lobby"]]);
+
+story('kitchen','The Kitchen',[
+ "The kitchen is a battlefield of flour and copper. A chef in a very tall hat points a whisk at you. “Are you the new dishwasher?”",
+ "Behind him, a waiter in white gloves is loading a tray with eleven glasses of champagne. In the corner, a narrow door is marked PANTRY, STAFF ONLY. On the stove, something golden is bubbling with great confidence."],
+ [["If you say, “Yes, chef,”","dishes"],["If you say you are a guest of the Fox,","pastry"],["If you taste whatever is bubbling on the stove,","sauce"],["If you slip out behind the waiter with the champagne,","ballroom_door"]]);
+
+dead('dishes','Yes, Chef',[
+ "“Wonderful,” says the chef, and hands you an apron. Forty minutes later you have washed a hundred and twelve teacups, and you know more about the hotel’s guests than anyone should."],
+ "a glass of tap water, in a very clean glass.",'kitchen');
+
+dead('sauce','Too Hot to Handle',[
+ "It is caramel. It is also, at this moment, roughly the temperature of the surface of the sun. You discover this the way everyone discovers it."],
+ "a glass of cold milk, handed over by a pastry chef without comment.",'kitchen');
+
+story('boilerstairs','Down the Back Stairs',[
+ "Each step down makes the air warmer and the music clearer. At the bottom, the passage splits.",
+ "To the left, a low stone tunnel breathes cold air that smells of oak and wet stone. To the right, a heavy door with a brass-covered peephole. From behind it come a trumpet, the click of dice, and a laugh like a drawer closing."],
+ [["If you take the cold tunnel on the left,","tunnel"],["If you knock at the door on the right,","speakeasy_door"],["If you go back up to the corridor,","servicehall"]]);
+
+story('speakeasy_door','The Peephole',[
+ "The peephole slides open. An eyebrow regards you. “Yes?” says the eyebrow."],
+ [["If you knock three times, slowly,","speakeasy"],["If you try the handle,","closet"],["If you say “The Fox sent me,”","eyebrow"],["If you retreat to the fork in the passage,","boilerstairs"]]);
+
+story('eyebrow','Everybody Says That',[
+ "“Everybody says that,” says the eyebrow, not unkindly. “It’s the one thing the Fox didn’t think through. Knock.”"],
+ [["If you knock three times, slowly,","speakeasy"],["If you try the handle after all,","closet"]]);
+
+dead('closet','A Broom Closet',[
+ "The handle turns. Behind the door are a broom, a bucket, a shelf of boot polish and a man named Gerald, who has been hiding from the speakeasy since Tuesday. He puts a finger to his lips. You are now part of this."],
+ "a thimble of Gerald’s iced tea, and a promise not to mention it.",'speakeasy_door');
+
+story('tunnel','The Cold Tunnel',[
+ "The tunnel is narrow, damp and as cool as a held breath. It smells of oak, wet stone and, faintly, horse. Three passages open ahead.",
+ "The left one ends at a door chalked with the outlines of wine racks. Straight on, a trumpet is playing something with too many notes. To the right, a trail of hay leads off into the dark."],
+ [["If you try the door with the wine racks,","cellar"],["If you follow the trumpet,","speakeasy"],["If you follow the hay,","stables"]]);
+
+story('dumbwaiter','The Dumbwaiter',[
+ "The dumbwaiter was designed for a ham, not a person. You fold yourself in, knees at your ears. Two ropes hang within reach, and a small brass plate says UP over one and DOWN over the other. It says nothing else, which is typical of brass."],
+ [["If you pull the rope marked UP,","pastry"],["If you pull the rope marked DOWN,","cellar"],["If you pull both at once,","stuck"]]);
+
+dead('stuck','Between Floors',[
+ "The dumbwaiter stops at precisely the wrong moment, between the kitchen and everything else. Somewhere below, a pastry chef is calmly calling for the ham.",
+ "After some time, a hand reaches through a gap in the shaft and passes you something small and cold."],
+ "a cube of ice, passed through the shaft by a kind stranger.",'dumbwaiter');
+
+/* garden wing */
+story('courtyard','The Courtyard',[
+ "The garden door lets you out onto gravel and moonlight. The hedges have been clipped into shapes that might be foxes, though no one has ever been able to prove it.",
+ "Three buildings face the courtyard: a long low barn that smells of hay and horse, a glasshouse glowing green from within, and a small stone annex with a lamp over the door and a mortar and pestle painted on the window."],
+ [["If you try the barn,","stableyard"],["If you try the glasshouse,","glasshouse"],["If you try the stone annex,","annex"],["If you go back inside,","lobby"]]);
+
+story('stableyard','The Stable Yard',[
+ "There are eight stalls and seven horses. The eighth stall holds a goat, who regards you the way a headwaiter regards a man without a reservation.",
+ "A groom with a lantern leans on a half door. “The grey bites,” he says. “The goat bites harder.” By the door stands a bucket of apples marked HORSES ONLY. The goat is aware of this. A ladder leads up to a hayloft."],
+ [["If you offer an apple to the nearest horse,","stables"],["If you try to ride the goat,","goat"],["If you climb to the hayloft,","hayloft"],["If you go back to the courtyard,","courtyard"]]);
+
+dead('goat','The Goat',[
+ "You approach the goat with confidence and a plan. The goat has neither. It looks at you, then at the saddle, then at you again, and the plan dissolves.",
+ "The goat leans forward and eats your hat. It is a good hat. The goat agrees."],
+ "a bucket of oats. The goat takes it.",'stableyard');
+
+story('hayloft','The Hayloft',[
+ "The loft is warm, dim and smells of summer. There is a hay bale shaped like an armchair, a lantern, and a trapdoor in the floor with DOWN written across it in chalk, with an arrow, for the cautious."],
+ [["If you open the trapdoor,","tunnel"],["If you sit in the hay-bale armchair,","hayfever"],["If you climb back down to the yard,","stableyard"]]);
+
+dead('hayfever','Hay Fever',[
+ "You sit. The hay receives you. Within a minute your eyes are streaming, your nose has declared independence, and the sneezes arrive in groups of three. Below you, a horse sighs the way horses sigh at people."],
+ "a throat lozenge and a clean handkerchief.",'hayloft');
+
+story('glasshouse','The Glasshouse',[
+ "Warm, wet air and the smell of earth. Ferns arch overhead. A path of crushed shell winds between orchids the size of dinner plates, and a gardener in rubber boots is misting a palm with great tenderness. “Mind the carnivorous ones,” she says. “They get peckish after dark.”",
+ "Off to one side stands a lemon tree in a pot. On the other, a plant with a pink mouth waits, patient and unblinking. A path of herbs leads away toward a lamplit door."],
+ [["If you follow the shell path deeper in,","conservatory"],["If you pet the plant with the pink mouth,","flytrap"],["If you pick a lemon from the tree,","lemon"],["If you follow the herb path to the lamplit door,","annex"]]);
+
+dead('flytrap','A Mistake in the Glasshouse',[
+ "The plant waits until you are very close before it moves. It does not hurt. It is simply, deeply insulted.",
+ "The gardener removes you with a patience that suggests this is a weekly event."],
+ "a cup of chamomile tea and a very small bandage.",'glasshouse');
+
+story('lemon','The Lemon',[
+ "You pick a lemon. A boy in a flour-dusted apron appears from behind a fern, takes it from your hand and says, with great feeling, “She’s been waiting for that since Tuesday!” He grabs your sleeve and hurries you toward a low door in the glasshouse wall."],
+ [["If you follow him,","pastry"],["If you plead a prior engagement and stay put,","glasshouse"]]);
+
+story('annex','The Annex',[
+ "Inside, the walls are made of tiny drawers, hundreds of them, each labeled in Latin. Green glass bottles catch the lamplight. Behind the counter an apothecary in round spectacles grinds something in a mortar and does not look up. “Ah,” she says. “A patient.”",
+ "One drawer is marked DO NOT OPEN, and its handle is the only one in the room polished by fingers. A shelf of tinctures, A through M, sits strangely close to the wall."],
+ [["If you ask for something for what ails you,","apothecary"],["If you open the drawer marked DO NOT OPEN,","drawer"],["If you push on the shelf of tinctures,","secretstair"],["If you go back out to the courtyard,","courtyard"]]);
+
+dead('drawer','Do Not Open',[
+ "You open the drawer. Inside lie a spoon and a brown bottle labeled COD LIVER OIL. A small printed card reads: THIS IS WHAT HAPPENS."],
+ "one spoonful of cod liver oil. Hold your nose.",'annex');
+
+story('secretstair','The Hidden Stair',[
+ "The shelf swings inward. Behind it, a narrow spiral staircase climbs into the dark, each step labeled with the Latin name of a plant. At the top is a wall of books. You push, and the wall opens, and you step into a vast room of green-shaded lamps and leather chairs from the wrong side, through a shelf marked BOTANY."],
+ [["If you step into the room,","library"],["If you go back down,","annex"]]);
+
+/* ---------- the nine doors ---------- */
+dest('library','The Library',[
+ "The Reading Room is two storeys of books, with a rolling ladder, green-shaded lamps and a fire that has been burning since the Taft administration. A librarian sits behind the desk, as still as the books.",
+ "“These are the drinks we keep on reserve,” she says, in the softest voice you have ever heard. “Please choose quietly.”"],
+ "A bookmark of russet fur marks the place in a very old copy of Reynard the Fox.",
+ [
+  ["Last Word","Green, sharp, herbal, lime-bright","¾ oz gin · ¾ oz green Chartreuse · ¾ oz maraschino liqueur · ¾ oz lime juice. Shake, strain into a coupe.","Four ingredients in equal parts, so nobody can say they were not given a chance to speak. It came out of the Detroit Athletic Club, and it has the best name in any library."],
+  ["Scofflaw","Rye, tart red fruit, a thread of vermouth","1½ oz rye · 1 oz dry vermouth · ¾ oz lemon juice · ¾ oz grenadine · 2 dashes orange bitters. Shake, strain into a coupe.","The word was coined in a 1924 newspaper contest to describe a person who ignores the drinking laws. A Paris bar is said to have answered with this cocktail the same year. The library approves of any drink that began as a vocabulary word."],
+  ["Old Fashioned","Whiskey, orange oils, quiet depth","2 oz bourbon or rye · 1 sugar cube or ¼ oz simple syrup · 2 dashes Angostura. Stir over one large cube, orange peel.","Spirit, sugar, bitters and water is the original definition of a cocktail, printed in 1806. It has gone unrevised ever since, though several have tried."],
+  ["The Bookmark","Cold Earl Grey, honey, lemon, a little fizz","4 oz strong cold Earl Grey · ½ oz honey syrup · ½ oz lemon juice · 2 oz soda. Build over ice, lemon wheel.","Tea has been the library’s drink for centuries. The honey is for sweetening bad reviews.",true]
+ ]);
+
+dest('stables','The Stables',[
+ "The nearest horse accepts the apple, considers you for a long moment and decides you will do. The groom hangs his lantern on a hook and nods toward the tack room.",
+ "“We keep the good bottles beside the saddles,” he says. “Horses can’t read the labels.” Overhead, a barn cat pretends not to be interested."],
+ "A green coat hangs on a nail beside the saddles, still dripping.",
+ [
+  ["Mint Julep","Bourbon, mint, frost","2½ oz bourbon · ½ oz simple syrup · 8 mint leaves. Press the mint gently, add bourbon and syrup, pack with crushed ice, mint sprig.","The Kentucky Derby drink. Press the mint gently, since it is a guest and not an enemy. Hold the cup by the rim so your hand does not melt the frost."],
+  ["Horse’s Neck","Brandy, ginger, a very long lemon spiral","2 oz brandy · 2 dashes Angostura · 4 oz ginger ale. Build over ice in a tall glass, with one lemon’s peel cut in a single long spiral and hung over the rim.","The name comes from that long spiral of peel, which droops like a horse’s neck. The earliest versions reportedly had no spirit at all, and the “kick” arrived later."],
+  ["Jack Rose","Apple brandy, lemon, pomegranate","2 oz applejack · ¾ oz lemon juice · ½ oz grenadine. Shake, strain into a coupe.","Applejack is American apple brandy. The horses get the apples, you get the Jack Rose, and everyone leaves satisfied."],
+  ["Haymaker’s Switchel","Ginger, maple, a bright bite of vinegar","½ oz apple cider vinegar · ¾ oz maple syrup · 3 slices fresh ginger · 5 oz cold water. Muddle the ginger with the syrup, add the rest, shake, pour over ice.","A thirst-quencher for farmhands in the haying season. It tastes better than it sounds, which is a low bar, and it clears it.",true]
+ ]);
+
+dest('speakeasy','The Speakeasy',[
+ "The door opens on a trumpet, a haze of smoke the color of caramel and a long dark bar polished by a great many elbows. The woman behind it looks exactly like Rosie from the front desk.",
+ "“My sister,” she says, before you can ask. “Also Rosie. It saves on stationery.”"],
+ "The cash register is stamped with a small gold fox. It has never, in living memory, been opened.",
+ [
+  ["Bee’s Knees","Gin, honey, lemon","2 oz gin · ¾ oz lemon juice · ¾ oz honey syrup. Shake, strain into a coupe.","Honey and lemon softened the rough edges of the bathtub gin of the day, or so the story goes. “The bee’s knees” was 1920s slang for the very best, which is what you are about to have."],
+  ["Southside","Gin, lime, mint, cold and green","2 oz gin · ¾ oz lime juice · ¾ oz simple syrup · 6 mint leaves. Shake hard, double strain into a coupe.","Chicago and Long Island both claim it. Both stories involve gin that needed help."],
+  ["Sidecar","Cognac, orange, lemon","2 oz cognac · ¾ oz Cointreau · ¾ oz lemon juice. Shake, strain into a coupe, sugar rim if you must.","Paris and London both claim it. One popular legend says a captain who arrived at his favorite bar by motorcycle sidecar gave it the name."],
+  ["Lime Rickey","Tart lime, sweet and very fizzy","1 oz lime juice · ¾ oz simple syrup · 4 oz soda water. Build over ice in a tall glass, drop in the spent lime shell.","A soda-fountain favorite. In a speakeasy, it is what you order when you still have to drive home.",true]
+ ]);
+
+dest('rooftop','The Rooftop',[
+ "The roof is flat, quiet and impossibly high, with a low stone parapet and a scatter of iron chairs. Below you the canyon opens out, silver in the moonlight, with a river threaded along its floor. The air smells of sage and cold stone.",
+ "A waiter in a white jacket appears with a tray, as though you had been expected. You probably had."],
+ "Small, neat tracks cross the frost on the parapet and continue, without hesitation, over the edge.",
+ [
+  ["Aviation","Lemon, cherry, violet, a pale sky in a glass","2 oz gin · ½ oz maraschino liqueur · ¼ oz crème de violette · ¾ oz lemon juice. Shake, strain into a coupe.","Hugo Ensslin printed the recipe in 1916. The crème de violette gives the glass the color of a thin evening sky, which suits the view."],
+  ["Dry Martini","Cold, crisp, botanical","2½ oz gin · ½ oz dry vermouth · 1 dash orange bitters. Stir with ice for 30 seconds, strain into a chilled coupe, lemon twist.","A view like this needs a drink that asks nothing of it. The proportions have started more arguments than the canyon has echoes."],
+  ["Blackberry Shrub Soda","Dark berry, a sharp vinegar edge, cold bubbles","1½ oz blackberry shrub · 4 oz soda water. Build over ice, mint sprig. For the shrub, steep equal parts crushed blackberries, sugar and cider vinegar for a day or two, then strain.","A shrub is fruit, sugar and vinegar, a trick from before refrigeration. It tastes like a very good berry that has strong opinions.",true]
+ ]);
+
+dest('apothecary','The Apothecary',[
+ "“Something for what ails you,” says the apothecary, taking down one bottle, then another, and consulting a book as thick as a loaf. In these dry times, she explains, a prescription is the only honest way to buy a bottle.",
+ "She writes one out for you in handwriting that only a pharmacist could read, and slides it across the counter with the satisfaction of a woman who knows the law very well."],
+ "On the top shelf, a jar labeled FOXGLOVE carries a note: Not for drinks. We mean it.",
+ [
+  ["Hot Toddy","Whiskey, honey, lemon, spice, steaming","2 oz Scotch or bourbon · ½ oz honey · ½ oz lemon juice · 4 oz hot water. Stir in a mug, cinnamon stick, lemon wheel studded with cloves.","The only prescription in the building that you are encouraged to take twice."],
+  ["Sazerac","Rye, anise, a flicker of lemon","2 oz rye · 1 sugar cube or ¼ oz simple syrup · 3 dashes Peychaud’s bitters · absinthe rinse. Stir, strain into a rinsed glass, lemon peel.","Peychaud’s bitters came from Antoine Peychaud, an apothecary in New Orleans. A legend says his egg cup, a coquetier, gave us the word cocktail. It is charming, much repeated and probably wrong."],
+  ["Corpse Reviver No. 2","Lemon, orange, a ghost of anise","¾ oz gin · ¾ oz Cointreau · ¾ oz Lillet Blanc · ¾ oz lemon juice · absinthe rinse. Shake, strain into a rinsed coupe.","A famous hair of the dog. Harry Craddock of the Savoy is credited with the warning attached to it: four in swift succession will make the corpse a corpse again."],
+  ["Patent Tonic","Honey, ginger, lemon, a bitter finish","¾ oz honey-ginger syrup · ½ oz lemon juice · 4 oz tonic water. Build over ice, lemon peel. For the syrup, steep sliced ginger in equal parts honey and hot water.","In the age of patent medicines, every bottle promised to cure something. This one only promises to taste good.",true]
+ ]);
+
+dest('pastry','The Pastry Pantry',[
+ "The pantry is the size of a chapel and twice as devout. Marble counters, glass domes, shelves of jam in the colors of stained glass, and a cooling rack of four hundred macarons in perfect rows.",
+ "A pastry chef with flour to her elbows slides a tray along the counter without looking up. “Sit,” she says. “Nobody leaves my pantry hungry. Or unsupervised.”"],
+ "On the cooling rack sits a pastry shaped like a fox, missing exactly one ear.",
+ [
+  ["Brandy Alexander","Cognac, chocolate, cream, nutmeg","1 oz cognac · 1 oz dark crème de cacao · 1 oz heavy cream. Shake hard, strain into a coupe, grated nutmeg.","Dessert in a coupe. It began as a gin drink, but the brandy version is the one that stuck."],
+  ["Clover Club","Raspberry, lemon, silky foam","2 oz gin · ½ oz lemon juice · ½ oz raspberry syrup · 1 egg white. Dry shake, shake again with ice, double strain.","From a Philadelphia gentlemen’s club of the 1890s. In essence, raspberry jam with better manners."],
+  ["Grasshopper","Mint, chocolate, cream","1 oz green crème de menthe · 1 oz white crème de cacao · 1 oz cream. Shake, strain into a coupe.","Said to have been born at Tujague’s in New Orleans in 1918. It tastes like an after-dinner mint that has been invited to something."],
+  ["Egg Cream","Chocolate, cold milk, a crown of foam","1 oz chocolate syrup · 3 oz cold whole milk · seltzer to top. Syrup and milk first, then a stream of seltzer, stirred briskly.","It contains neither egg nor cream. It is the only drink in this book whose name is a lie, and it has been forgiven.",true]
+ ]);
+
+dest('conservatory','The Conservatory',[
+ "The shell path ends in a round room of fogged glass, white iron and enormous ferns, where the air is warm enough to hang a coat on. A little table has been laid with a linen cloth, a pair of silver secateurs and a card reading PICK ONE.",
+ "The gardener appears with a basket on her arm and the look of someone who has been quietly pleased with you all evening."],
+ "A vine climbs the glass, labeled FOX GRAPE. One leaf has been nibbled, neatly, from the edge.",
+ [
+  ["Pimm’s Cup","Cucumber, mint, citrus, bright","2 oz Pimm’s No. 1 · 4 oz lemonade or ginger ale · cucumber, strawberry, orange slice, mint. Build over ice in a tall glass.","It is a salad with a drinking habit, and the gardener approves."],
+  ["Tom Collins","Gin, lemon, soda, crisp","2 oz gin · 1 oz lemon juice · ½ oz simple syrup · 3 oz soda. Build over ice in a tall glass, lemon wheel.","Named in part for a famous hoax of 1874, in which half of New York went looking for a man called Tom Collins who was said to be insulting them behind their backs."],
+  ["Garden Cooler","Cucumber, mint, lemon, cold","4 cucumber slices · 5 mint leaves · ¾ oz lemon juice · ¾ oz simple syrup · 4 oz soda. Muddle the first four, add ice, top with soda.","The gardener’s own recipe. She says it is mostly cucumber and entirely patience.",true]
+ ]);
+
+dest('ballroom','The Ballroom',[
+ "The next dance is a slow one. The lights dim, the orchestra drops to a murmur, and a waiter glides past with a tray of glasses that catch the chandelier like small, bubbling planets.",
+ "The woman in silver curtsies and leaves you with a table for one, a lingering scent of gardenias and a very good view of the room."],
+ "Across the floor, a woman in a russet fur stole slips out before the last waltz. The stole has a tail. No one remarks on it.",
+ [
+  ["Champagne Cocktail","Dry, bubbly, bitters and sugar","1 sugar cube · 2 dashes Angostura · 4 oz Champagne. Soak the cube, drop it in a flute, top with Champagne, lemon twist.","Jerry Thomas printed it in his 1862 bartender’s guide. The bubbles rise from the sugar cube in a tiny, orderly fireworks display."],
+  ["French 75","Gin, lemon, Champagne","1 oz gin · ½ oz lemon juice · ½ oz simple syrup · 3 oz Champagne. Shake the first three, strain into a flute, top with Champagne.","Named for a French field gun, because the kick was said to feel the same."],
+  ["Buck’s Fizz","Champagne and orange, light and sunny","2 oz fresh orange juice · 4 oz Champagne. Pour the juice first, then top gently with Champagne.","From Buck’s Club in London, 1921, at two parts Champagne to one of orange. The Mimosa is the same idea in equal parts, said to have arrived at the Ritz in Paris four years later."],
+  ["Orange Blossom Fizz","Orange, a whisper of flowers, bubbles","3 oz orange juice · ½ oz lemon juice · ½ oz simple syrup · 2 drops orange flower water · 2 oz soda. Shake the first four with ice, strain, top with soda.","For the guest who wants to dance until the last waltz and remember all of it.",true]
+ ]);
+
+dest('cellar','The Cellar',[
+ "The cellar door sticks, then gives. Beyond it lie vaulted brick, a damp that feels almost reverent, and rows of bottles on their sides like sleepers in a long dormitory. A candle burns on a barrel.",
+ "A sommelier in a leather apron looks up with the stillness of a man who spends his days waiting for things to age. “Nothing down here is in a hurry,” he says. “That is rather the point.”"],
+ "A bottle labeled RENARD, 1919, the year the hotel closed, is missing from its rack. The dust still holds the outline of its absence.",
+ [
+  ["Adonis","Sherry, sweet vermouth, nutty and soft","2 oz fino sherry · 1 oz sweet vermouth · 2 dashes orange bitters. Stir, strain into a coupe, orange peel.","Named for a hit Broadway musical of 1884. It has been waiting in the dark for a revival ever since."],
+  ["Sherry Cobbler","Sherry, orange, a mountain of crushed ice","3 oz amontillado or oloroso sherry · ½ oz simple syrup · 3 orange slices. Muddle the orange with the syrup, add sherry, pack with crushed ice, berries, mint, straw.","A fashionable drink of the nineteenth century, and one of the reasons anyone drinks through a straw."],
+  ["Americano","Campari, vermouth, soda, bittersweet","1½ oz Campari · 1½ oz sweet vermouth · soda to top. Build over ice, orange slice.","Said to be named for the American visitors who drank it by the pitcher in Italy."],
+  ["Verjus & Soda","Tart green grape, crisp, a little floral","2 oz verjus blanc · ½ oz simple syrup · 4 oz soda. Build over ice, lemon peel.","Verjus is the pressed juice of unripe grapes. The sommelier says it is the only thing in the cellar that is ready to drink right now.",true]
+ ]);
+
+var DEST=['library','stables','speakeasy','rooftop','apothecary','pastry','conservatory','ballroom','cellar'];
+
+/* ---------- page numbers: scrambled like a real book, with three pinned ---------- */
+var pinned={start:1,bookshop:2,home:3};
+var rest=Object.keys(D).filter(function(k){return !(k in pinned);});
+function mulberry32(a){return function(){var t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+var rnd=mulberry32(1926);
+for(var i=rest.length-1;i>0;i--){var j=Math.floor(rnd()*(i+1));var tmp=rest[i];rest[i]=rest[j];rest[j]=tmp;}
+var NUM={};
+Object.keys(pinned).forEach(function(k){NUM[k]=pinned[k];});
+rest.forEach(function(k,n){NUM[k]=n+4;});
+
+var DEAD_TOTAL=Object.keys(D).filter(function(k){return D[k].kind==='dead';}).length;
+var DRINK_TOTAL=DEST.reduce(function(n,k){return n+D[k].drinks.length;},0);
+window.FoxBook={pages:D,num:NUM,dest:DEST};
+
+/* ---------- state ---------- */
+var KEY='fox-sent-me-v1';
+var S={found:{},dead:{}};
+try{
+  var raw=window.localStorage.getItem(KEY);
+  if(raw){var o=JSON.parse(raw); if(o&&typeof o==='object'){S.found=o.found||{};S.dead=o.dead||{};}}
+}catch(err){}
+function save(){try{window.localStorage.setItem(KEY,JSON.stringify(S));}catch(err){}}
+function foundCount(){return DEST.filter(function(k){return S.found[k];}).length;}
+var hist=[],cur=null,armed=false,armTimer=null;
+
+/* ---------- helpers ---------- */
+function e(tag,cls,txt){var x=document.createElement(tag);if(cls){x.className=cls;}if(txt!=null){x.textContent=txt;}return x;}
+function choiceBtn(build,target){
+  var li=e('li'),b=e('button','choice');b.type='button';
+  build(b);
+  b.addEventListener('click',function(){go(target);});
+  li.append(b);return li;
+}
+function ifChoice(clause,target){
+  return choiceBtn(function(b){
+    var t=e('span','turn');t.append('turn to page ',e('b',null,String(NUM[target])),'.');
+    b.append(clause+' ',t);
+  },target);
+}
+function nineBanner(){
+  var n=e('aside','nine');
+  n.append(e('p',null,"That is all nine matches. The matchbook is empty. At the front desk, Rosie slides one more glass across the marble and says nothing. The Fox, as usual, is out."));
+  return n;
+}
+
+/* ---------- chrome ---------- */
+function drawBar(freshKey){
+  var mb=document.getElementById('matchbook');mb.replaceChildren();
+  DEST.forEach(function(k){
+    var b=e('button','match');b.type='button';
+    b.style.setProperty('--c','var(--c-'+k+')');
+    if(S.found[k]){
+      b.className+=' lit'+(freshKey===k?' strike':'');
+      b.setAttribute('aria-label','Return to '+D[k].title+', page '+NUM[k]);
+      b.title=D[k].title+', page '+NUM[k];
+      b.addEventListener('click',function(){go(k);});
+    }else{
+      b.disabled=true;
+      b.setAttribute('aria-label','A door you have not found yet');
+    }
+    b.append(e('span','head'),e('span','stick'));
+    mb.append(b);
+  });
+  var dd=Object.keys(S.dead).filter(function(k){return D[k]&&D[k].kind==='dead';}).length;
+  document.getElementById('tally').textContent=foundCount()+' of '+DEST.length+' doors · '+dd+' of '+DEAD_TOTAL+' dead ends';
+}
+function drawTools(){
+  var t=document.getElementById('tools');t.replaceChildren();
+  var back=e('button','linkbtn','← Back');back.type='button';back.disabled=hist.length===0;
+  back.addEventListener('click',function(){var p=hist.pop();if(p!=null){go(p,false);}});
+  var start=e('button','linkbtn','Start over');start.type='button';
+  start.addEventListener('click',function(){hist=[];go('cover',false);});
+  var reset=e('button','linkbtn',armed?'Tap again to erase matchbook':'Erase matchbook');reset.type='button';
+  reset.addEventListener('click',function(){
+    if(armed){armed=false;clearTimeout(armTimer);S={found:{},dead:{}};save();hist=[];go('cover',false);}
+    else{armed=true;drawTools();armTimer=setTimeout(function(){armed=false;drawTools();},4000);}
+  });
+  t.append(back,start,reset);
+}
+
+/* ---------- pages ---------- */
+function draw(k,fresh){
+  var L=document.getElementById('leaf');L.replaceChildren();
+  var p=D[k],h,ul;
+  if(p&&p.kind==='dest'){L.setAttribute('data-dest',k);}else{L.removeAttribute('data-dest');}
+
+  if(k==='cover'){
+    L.append(e('span','kick','A choose-your-own-adventure cocktail book'));
+    h=e('h1',null,'The Fox Sent Me');h.tabIndex=-1;L.append(h);
+    L.append(e('p',null,'Nine doors. '+DRINK_TOTAL+' drinks. One goat.'));
+    var w=e('div','warn');
+    w.append(e('p'),e('p',null,'Do not read this book from beginning to end. It will make no sense, and your drink will get warm.'),
+      e('p',null,'Instead, begin at page 1 and make decisions. Each page tells you where to turn. Some choices lead to a cocktail. Some lead to an alley. A few lead to a goat.'),
+      e('p',null,'If you make a poor decision, turn back and try again. Nobody is keeping score, except possibly the Fox.'));
+    w.firstChild.append(e('strong',null,'Warning!'));
+    L.append(w);
+    if(foundCount()===DEST.length){L.append(nineBanner());}
+    ul=e('ul','choices');
+    ul.append(choiceBtn(function(b){var t=e('span','turn');t.append('Begin at page ',e('b',null,String(NUM.start)),'.');b.append(t);},'start'));
+    L.append(ul);
+  }else{
+    var f=e('div','folio'),pg=e('span','pg');
+    pg.append(e('small',null,'Page'),e('b',null,String(NUM[k])));
+    f.append(pg,e('span','where',{story:'Choose carefully',dead:'A poor decision',dest:'A door of nine'}[p.kind]));
+    L.append(f);
+    h=e('h1',null,p.title);h.tabIndex=-1;L.append(h);
+    p.paras.forEach(function(t){L.append(e('p',null,t));});
+
+    if(p.kind==='story'){
+      L.append(e('p','ask','What do you do?'));
+      ul=e('ul','choices');
+      p.choices.forEach(function(c){ul.append(ifChoice(c[0],c[1]));});
+      L.append(ul);
+    }
+    if(p.kind==='dead'){
+      var fin=e('p','finale');
+      var yd=e('span','yourdrink');yd.append('Your drink: ',e('b',null,p.drink));
+      fin.append(e('span','end','The End.'),yd);
+      L.append(fin);
+      ul=e('ul','choices');
+      ul.append(choiceBtn(function(b){var t=e('span','turn');t.append('Turn back to page ',e('b',null,String(NUM[p.back])),' and try again.');b.append(t);},p.back));
+      L.append(ul);
+    }
+    if(p.kind==='dest'){
+      var fx=e('aside','fox');fx.append(e('span','kick','Fox sighting'),e('p',null,p.fox));L.append(fx);
+      L.append(e('p','menu-k','The End. Your drink, choose one:'));
+      var ol=e('ul','menu');
+      p.drinks.forEach(function(d){
+        var li=e('li','drink');
+        if(d[4]){li.append(e('span','badge','No alcohol'));}
+        li.append(e('h2',null,d[0]),e('p','taste',d[1]),e('p','build',d[2]),e('p','lore',d[3]));
+        ol.append(li);
+      });
+      L.append(ol);
+      if(foundCount()===DEST.length){L.append(nineBanner());}
+      ul=e('ul','choices');
+      ul.append(choiceBtn(function(b){var t=e('span','turn');t.append('If you would like to find another door, turn back to page ',e('b',null,String(NUM.start)),'.');b.append(t);},'start'));
+      L.append(ul);
+      if(fresh){var en=L.querySelector('.menu-k');if(en){en.classList.add('fresh');}}
+    }
+  }
+  drawBar(fresh?k:null);drawTools();
+  window.scrollTo(0,0);
+  if(h){h.focus({preventScroll:true});}
+}
+
+function go(k,push){
+  if(push!==false&&cur!==null&&cur!==k){hist.push(cur);}
+  cur=k;
+  var p=D[k],fresh=false;
+  if(p&&p.kind==='dest'&&!S.found[k]){S.found[k]=Date.now();fresh=true;}
+  if(p&&p.kind==='dead'){S.dead[k]=1;}
+  save();
+  draw(k,fresh);
+}
+
+document.getElementById('brand').addEventListener('click',function(){hist=[];go('cover',false);});
+go('cover',false);
+})();
+</script>
+</body></html>
